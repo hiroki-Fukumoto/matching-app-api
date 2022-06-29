@@ -1,0 +1,12 @@
+{
+    "[go]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": false,
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": true
+    },
+    "cSpell.words": [
+        "hiroki"
+    ]
+}

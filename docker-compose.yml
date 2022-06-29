@@ -1,0 +1,64 @@
+version: '3'
+services: 
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+    volumes:
+      - ./api:/go/api
+    ports: 
+      - 8080:8080
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+    networks:
+      - matching-app-network
+
+  nginx:
+    image: nginx
+    depends_on:
+      - api
+    ports:
+      - 1234:1234
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - matching-app-network
+
+  db:
+    image: mysql:8.0
+    platform: linux/amd64
+    restart: always
+    environment:
+      MYSQL_DATABASE: example_db
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: user123
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
+    networks:
+      - matching-app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+        - PMA_ARBITRARY=1
+        - PMA_HOST=db
+        - PMA_USER=user1
+        - PMA_PASSWORD=user123
+    ports:
+         - 8888:80
+    volumes:
+        - /sessions
+    networks:
+      - matching-app-network
+
+networks:
+  matching-app-network:

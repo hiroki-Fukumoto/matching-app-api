@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "golang.go",
+        "EditorConfig.EditorConfig",
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "davidhouchin.whitespace-plus"
+    ]
+}

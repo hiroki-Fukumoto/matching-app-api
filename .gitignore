@@ -1,0 +1,7 @@
+/api/.env
+/api/temp/*
+/api/tmp/*
+/docker/db/data/*
+/docker/minio/config/*
+/docker/minio/data/*
+/docker/minio/export/.minio.sys/*
