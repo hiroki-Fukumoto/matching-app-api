@@ -45,3 +45,6 @@ make generate-api-doc
 ```
 
 go to <http://localhost:8080/swagger/index.html>
+
+### phpMyAdmin
+go to <http://localhost:8888/>
