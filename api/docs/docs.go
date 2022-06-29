@@ -24,6 +24,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "health check"
+                ],
                 "summary": "health check",
                 "responses": {
                     "200": {
@@ -32,6 +35,47 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        },
+        "/api/v1/initial": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "initial"
+                ],
+                "summary": "アプリ起動時にコールする",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.InitialResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "response.InitialResponse": {
+            "type": "object",
+            "required": [
+                "current_version",
+                "min_version"
+            ],
+            "properties": {
+                "current_version": {
+                    "description": "current version",
+                    "type": "string"
+                },
+                "min_version": {
+                    "description": "min version",
+                    "type": "string"
                 }
             }
         }

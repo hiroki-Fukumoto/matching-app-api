@@ -1,3 +1,16 @@
+definitions:
+  response.InitialResponse:
+    properties:
+      current_version:
+        description: current version
+        type: string
+      min_version:
+        description: min version
+        type: string
+    required:
+    - current_version
+    - min_version
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -17,4 +30,20 @@ paths:
           schema:
             type: string
       summary: health check
+      tags:
+      - health check
+  /api/v1/initial:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.InitialResponse'
+      summary: アプリ起動時にコールする
+      tags:
+      - initial
 swagger: "2.0"

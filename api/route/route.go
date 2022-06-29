@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/hiroki-Fukumoto/matching-app/api/controller"
+	"github.com/hiroki-Fukumoto/matching-app/api/controller/service"
 
 	_ "github.com/hiroki-Fukumoto/matching-app/api/docs"
 
@@ -43,6 +44,14 @@ func SetupRouter() *gin.Engine {
 		c := controller.NewHealthCheckController()
 
 		gHealthCheck.GET("", c.HealthCheck)
+	}
+
+	gInitial := appApiV1.Group("initial")
+	{
+		s := service.NewInitialService()
+		c := controller.NewInitialController(s)
+
+		gInitial.GET("", c.Initial)
 	}
 
 	return route
