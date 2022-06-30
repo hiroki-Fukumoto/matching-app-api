@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hiroki-Fukumoto/matching-app/api/controller/service"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/service"
 )
 
 type InitialController interface {

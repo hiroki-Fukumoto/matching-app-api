@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/hiroki-Fukumoto/matching-app/api/response"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/response"
 )
 
 type InitialService interface {

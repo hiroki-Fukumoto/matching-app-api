@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 
+	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -24,5 +25,13 @@ func Connect() *gorm.DB {
 		panic(err)
 	}
 
+	autoMigration()
+
 	return db
+}
+
+func autoMigration() {
+	db.AutoMigrate(
+		&model.User{},
+	)
 }

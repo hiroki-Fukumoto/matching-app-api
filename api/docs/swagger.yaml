@@ -1,4 +1,37 @@
 definitions:
+  error_handler.ErrorResponse:
+    properties:
+      error:
+        type: string
+      error_detail:
+        items:
+          type: string
+        type: array
+      status:
+        type: integer
+    type: object
+  request.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  response.AuthenticationResponse:
+    properties:
+      api_token:
+        description: IDトークン
+        type: string
+    required:
+    - api_token
+    type: object
   response.InitialResponse:
     properties:
       current_version:
@@ -10,6 +43,32 @@ definitions:
     required:
     - current_version
     - min_version
+    type: object
+  response.LoginUserResponse:
+    properties:
+      authentication:
+        $ref: '#/definitions/response.AuthenticationResponse'
+      me:
+        $ref: '#/definitions/response.MeResponse'
+    required:
+    - authentication
+    - me
+    type: object
+  response.MeResponse:
+    properties:
+      email:
+        description: メールアドレス
+        type: string
+      id:
+        description: ID
+        type: string
+      name:
+        description: 名前
+        type: string
+    required:
+    - email
+    - id
+    - name
     type: object
 host: localhost:8080
 info:
@@ -46,4 +105,34 @@ paths:
       summary: アプリ起動時にコールする
       tags:
       - initial
+  /api/v1/users:
+    post:
+      consumes:
+      - application/json
+      description: 新しいユーザーを作成する
+      parameters:
+      - description: ユーザー情報
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.LoginUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: ユーザー新規作成
+      tags:
+      - users
 swagger: "2.0"

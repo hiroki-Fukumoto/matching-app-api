@@ -59,9 +59,104 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/users": {
+            "post": {
+                "description": "新しいユーザーを作成する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "ユーザー新規作成",
+                "parameters": [
+                    {
+                        "description": "ユーザー情報",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.LoginUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "error_handler.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "error_detail": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                }
+            }
+        },
+        "response.AuthenticationResponse": {
+            "type": "object",
+            "required": [
+                "api_token"
+            ],
+            "properties": {
+                "api_token": {
+                    "description": "IDトークン",
+                    "type": "string"
+                }
+            }
+        },
         "response.InitialResponse": {
             "type": "object",
             "required": [
@@ -75,6 +170,43 @@ const docTemplate = `{
                 },
                 "min_version": {
                     "description": "min version",
+                    "type": "string"
+                }
+            }
+        },
+        "response.LoginUserResponse": {
+            "type": "object",
+            "required": [
+                "authentication",
+                "me"
+            ],
+            "properties": {
+                "authentication": {
+                    "$ref": "#/definitions/response.AuthenticationResponse"
+                },
+                "me": {
+                    "$ref": "#/definitions/response.MeResponse"
+                }
+            }
+        },
+        "response.MeResponse": {
+            "type": "object",
+            "required": [
+                "email",
+                "id",
+                "name"
+            ],
+            "properties": {
+                "email": {
+                    "description": "メールアドレス",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名前",
                     "type": "string"
                 }
             }

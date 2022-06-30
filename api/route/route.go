@@ -4,10 +4,12 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/hiroki-Fukumoto/matching-app/api/controller"
-	"github.com/hiroki-Fukumoto/matching-app/api/controller/service"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/config"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/controller"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/repository"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/service"
 
-	_ "github.com/hiroki-Fukumoto/matching-app/api/docs"
+	_ "github.com/hiroki-Fukumoto/matching-app-api/api/docs"
 
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -52,6 +54,16 @@ func SetupRouter() *gin.Engine {
 		c := controller.NewInitialController(s)
 
 		gInitial.GET("", c.Initial)
+	}
+
+	gUser := appApiV1.Group("users")
+	{
+		db := config.Connect()
+		r := repository.NewUserRepository(db)
+		s := service.NewUserService(r)
+		c := controller.NewUserController(s)
+
+		gUser.POST("", c.Create)
 	}
 
 	return route

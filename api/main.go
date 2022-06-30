@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/hiroki-Fukumoto/matching-app/api/route"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/route"
 )
 
 const location = "Asia/Tokyo"
