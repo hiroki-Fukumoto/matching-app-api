@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/google/uuid"
 )
 
 var secret = os.Getenv("SECRET_KEY")
@@ -24,7 +23,7 @@ type Auth struct {
 	Exp    int64
 }
 
-func GenerateToken(userId uuid.UUID) (string, error) {
+func GenerateToken(userId string) (string, error) {
 	now := time.Now()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		userIdKey: userId,
@@ -70,12 +69,6 @@ func ParseToken(signedString string) (*Auth, error) {
 
 	userId := claims[userIdKey]
 	iat := claims[iatKey]
-
-	// reflectedValue := reflect.ValueOf(userId)
-	// id, _ := reflectedValue.Interface().(uuid.UUID)
-
-	// fmt.Println(userId)
-	// fmt.Println(userId.(string))
 
 	return &Auth{
 		UserID: userId.(string),

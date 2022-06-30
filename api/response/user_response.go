@@ -1,14 +1,13 @@
 package response
 
 import (
-	"github.com/google/uuid"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
 )
 
 type MeResponse struct {
-	ID    uuid.UUID `json:"id" validate:"required"`    // ID
-	Name  string    `json:"name" validate:"required"`  // 名前
-	Email string    `json:"email" validate:"required"` // メールアドレス
+	ID    string `json:"id" validate:"required"`    // ID
+	Name  string `json:"name" validate:"required"`  // 名前
+	Email string `json:"email" validate:"required"` // メールアドレス
 }
 
 func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
