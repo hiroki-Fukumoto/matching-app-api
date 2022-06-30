@@ -33,5 +33,6 @@ func Connect() *gorm.DB {
 func autoMigration() {
 	db.AutoMigrate(
 		&model.User{},
+		&model.Device{},
 	)
 }
