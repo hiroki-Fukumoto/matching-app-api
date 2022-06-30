@@ -78,7 +78,8 @@ func (uc userController) Me(c *gin.Context) {
 		return
 	}
 
-	res := response.ToMeResponse(user)
+	res := &response.MeResponse{}
+	res.ToMeResponse(user)
 
 	c.JSON(http.StatusOK, res)
 }

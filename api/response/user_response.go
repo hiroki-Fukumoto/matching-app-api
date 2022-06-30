@@ -11,12 +11,12 @@ type MeResponse struct {
 	Email string    `json:"email" validate:"required"` // メールアドレス
 }
 
-func ToMeResponse(u *model.User) (res MeResponse) {
-	res.ID = u.Base.ID
-	res.Name = u.Name
-	res.Email = u.Email
+func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
+	m.ID = u.Base.ID
+	m.Name = u.Name
+	m.Email = u.Email
 
-	return res
+	return *m
 }
 
 type AuthenticationResponse struct {
@@ -28,9 +28,9 @@ type LoginUserResponse struct {
 	Authentication AuthenticationResponse `json:"authentication" validate:"required"`
 }
 
-func ToLoginUserResponse(u *model.User, apiToken string) (res LoginUserResponse) {
-	res.Me = ToMeResponse(u)
-	res.Authentication.ApiToken = apiToken
+func (l *LoginUserResponse) ToLoginUserResponse(u *model.User, apiToken string) LoginUserResponse {
+	l.Me = l.Me.ToMeResponse(u)
+	l.Authentication.ApiToken = apiToken
 
-	return res
+	return *l
 }

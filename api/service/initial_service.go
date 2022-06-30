@@ -15,7 +15,7 @@ func NewInitialService() InitialService {
 }
 
 func (is initialService) Initial() (res *response.InitialResponse, err error) {
-	r := response.ToInitialResponse()
-	res = &r
+	res = &response.InitialResponse{}
+	res.ToInitialResponse()
 	return
 }

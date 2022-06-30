@@ -35,8 +35,8 @@ func (uu userService) Create(req *request.CreateUserRequest) (res *response.Logi
 		return nil, err
 	}
 
-	r := response.ToLoginUserResponse(user, apiToken)
-	res = &r
+	res = &response.LoginUserResponse{}
+	res.ToLoginUserResponse(user, apiToken)
 
 	return res, nil
 }

@@ -6,9 +6,9 @@ type InitialResponse struct {
 }
 
 // TODO
-func ToInitialResponse() (res InitialResponse) {
-	res.MinVersion = "1.0.0"
-	res.CurrentVersion = "1.0.1"
+func (i *InitialResponse) ToInitialResponse() InitialResponse {
+	i.MinVersion = "1.0.0"
+	i.CurrentVersion = "1.0.1"
 
-	return res
+	return *i
 }
