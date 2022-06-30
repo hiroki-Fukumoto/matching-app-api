@@ -5,7 +5,7 @@ import (
 )
 
 type InitialService interface {
-	Initial() (res response.InitialResponse, err error)
+	Initial() (res *response.InitialResponse, err error)
 }
 
 type initialService struct{}
@@ -14,8 +14,8 @@ func NewInitialService() InitialService {
 	return &initialService{}
 }
 
-func (is initialService) Initial() (res response.InitialResponse, err error) {
-	// TODO
-	res = response.ToInitialResponse()
+func (is initialService) Initial() (res *response.InitialResponse, err error) {
+	r := response.ToInitialResponse()
+	res = &r
 	return
 }

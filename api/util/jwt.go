@@ -19,7 +19,7 @@ const (
 )
 
 type Auth struct {
-	UserID uuid.UUID
+	UserID string
 	Iat    int64
 	Exp    int64
 }
@@ -71,8 +71,14 @@ func ParseToken(signedString string) (*Auth, error) {
 	userId := claims[userIdKey]
 	iat := claims[iatKey]
 
+	// reflectedValue := reflect.ValueOf(userId)
+	// id, _ := reflectedValue.Interface().(uuid.UUID)
+
+	// fmt.Println(userId)
+	// fmt.Println(userId.(string))
+
 	return &Auth{
-		UserID: userId.(uuid.UUID),
+		UserID: userId.(string),
 		Iat:    int64(iat.(float64)),
 	}, nil
 }

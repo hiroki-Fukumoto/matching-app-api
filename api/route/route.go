@@ -6,6 +6,7 @@ import (
 
 	"github.com/hiroki-Fukumoto/matching-app-api/api/config"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/controller"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/middleware"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/repository"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/service"
 
@@ -56,6 +57,15 @@ func SetupRouter() *gin.Engine {
 		gInitial.GET("", c.Initial)
 	}
 
+	gAuth := appApiV1.Group("")
+	{
+		ur := repository.NewUserRepository(config.Connect())
+		s := service.NewAuthService(ur)
+		c := controller.NewAuthController(s)
+
+		gAuth.POST("login", c.Login)
+	}
+
 	gUser := appApiV1.Group("users")
 	{
 		db := config.Connect()
@@ -64,6 +74,9 @@ func SetupRouter() *gin.Engine {
 		c := controller.NewUserController(s)
 
 		gUser.POST("", c.Create)
+
+		gUser.Use(middleware.CheckApiToken())
+		gUser.GET("me", c.Me)
 	}
 
 	return route

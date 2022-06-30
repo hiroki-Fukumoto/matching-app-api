@@ -12,7 +12,7 @@ type MeResponse struct {
 }
 
 func ToMeResponse(u *model.User) (res MeResponse) {
-	res.ID = u.ID
+	res.ID = u.Base.ID
 	res.Name = u.Name
 	res.Email = u.Email
 

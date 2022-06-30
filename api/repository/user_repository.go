@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"errors"
+
+	"github.com/hiroki-Fukumoto/matching-app-api/api/error_handler"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/request"
 	"golang.org/x/crypto/bcrypt"
@@ -13,6 +16,8 @@ type userRepository struct {
 
 type UserRepository interface {
 	Create(request *request.CreateUserRequest) (user *model.User, err error)
+	FindByEmail(email string) (user *model.User, err error)
+	FindByID(id string) (user *model.User, err error)
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
@@ -30,6 +35,38 @@ func (up *userRepository) Create(req *request.CreateUserRequest) (user *model.Us
 	}
 
 	if err := db.Create(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (up *userRepository) FindByEmail(email string) (user *model.User, err error) {
+	db := up.DB
+
+	err = db.Where("email = ?", email).First(&user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, error_handler.ErrRecordNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (up *userRepository) FindByID(id string) (user *model.User, err error) {
+	db := up.DB
+
+	err = db.Where("id = ?", id).First(&user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, error_handler.ErrRecordNotFound
+	}
+
+	if err != nil {
 		return nil, err
 	}
 
