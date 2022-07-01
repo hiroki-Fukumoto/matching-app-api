@@ -251,6 +251,44 @@ paths:
       summary: ユーザー新規作成
       tags:
       - users
+  /api/v1/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 指定したユーザーの詳細情報を取得する
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: ユーザー詳細情報取得
+      tags:
+      - users
   /api/v1/users/info/me:
     get:
       consumes:

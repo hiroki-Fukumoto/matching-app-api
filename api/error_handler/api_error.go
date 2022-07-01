@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+
+	"github.com/hiroki-Fukumoto/matching-app-api/api/enum"
 )
 
 var (
@@ -46,7 +48,7 @@ func ApiErrorHandle(err error, options ...Option) *ErrorResponse {
 	case ErrBadRequest:
 		fmt.Println(opts.Messages)
 		if opts.Messages == nil {
-			opts.Messages = &[]string{"不正なリクエストです"}
+			opts.Messages = &[]string{enum.BadRequest.String()}
 		}
 		return &ErrorResponse{
 			Status:      http.StatusBadRequest,
@@ -55,7 +57,7 @@ func ApiErrorHandle(err error, options ...Option) *ErrorResponse {
 		}
 	case ErrUnauthorized:
 		if opts.Messages == nil {
-			opts.Messages = &[]string{"認証が必要です"}
+			opts.Messages = &[]string{enum.Unauthorized.String()}
 		}
 		return &ErrorResponse{
 			Status:      http.StatusUnauthorized,
@@ -64,7 +66,7 @@ func ApiErrorHandle(err error, options ...Option) *ErrorResponse {
 		}
 	case ErrForbidden:
 		if opts.Messages == nil {
-			opts.Messages = &[]string{"実行権限がありません"}
+			opts.Messages = &[]string{enum.Forbidden.String()}
 		}
 		return &ErrorResponse{
 			Status:      http.StatusForbidden,
@@ -73,7 +75,7 @@ func ApiErrorHandle(err error, options ...Option) *ErrorResponse {
 		}
 	case ErrRecordNotFound:
 		if opts.Messages == nil {
-			opts.Messages = &[]string{"指定されたレコードは存在しません"}
+			opts.Messages = &[]string{enum.NotFound.String()}
 		}
 		return &ErrorResponse{
 			Status:      http.StatusNotFound,
@@ -82,7 +84,7 @@ func ApiErrorHandle(err error, options ...Option) *ErrorResponse {
 		}
 	default:
 		if opts.Messages == nil {
-			opts.Messages = &[]string{"サーバーエラーが発生しました"}
+			opts.Messages = &[]string{enum.InternalServerError.String()}
 		}
 		return &ErrorResponse{
 			Status:      http.StatusInternalServerError,

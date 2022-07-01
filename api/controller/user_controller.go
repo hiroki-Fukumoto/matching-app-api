@@ -17,6 +17,7 @@ type UserController interface {
 	Create(c *gin.Context)
 	Me(c *gin.Context)
 	PickupToday(c *gin.Context)
+	FindByID(c *gin.Context)
 }
 
 type userController struct {
@@ -114,6 +115,36 @@ func (uc userController) PickupToday(c *gin.Context) {
 	}
 
 	res, err := uc.userService.PickupToday(targetSex)
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err)
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// @Summary ユーザー詳細情報取得
+// @Description 指定したユーザーの詳細情報を取得する
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
+// @Param id path string true "id"
+// @Success 200 {object} response.UserResponse{}
+// @Failure 401 {object} error_handler.ErrorResponse
+// @Failure 403 {object} error_handler.ErrorResponse
+// @Failure 500 {object} error_handler.ErrorResponse
+// @Router /api/v1/users/{id} [get]
+func (uc userController) FindByID(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		apiError := error_handler.ApiErrorHandle(error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{enum.IDNoFound.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	res, err := uc.userService.FindByID(id)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err)
 		c.JSON(apiError.Status, apiError)

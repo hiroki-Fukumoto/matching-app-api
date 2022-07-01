@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/config"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/enum"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/error_handler"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/repository"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
@@ -12,8 +13,7 @@ import (
 
 func CheckApiToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		TOKEN_FORMAT_ERROR := "トークンが不正です"
-		messages := []string{TOKEN_FORMAT_ERROR}
+		messages := []string{enum.TokenFormatError.String()}
 
 		authorization := c.Request.Header["Authorization"]
 		if authorization == nil {
@@ -36,9 +36,9 @@ func CheckApiToken() gin.HandlerFunc {
 
 		auth, err := util.ParseToken(jwt)
 		if err != nil {
-			messages = []string{TOKEN_FORMAT_ERROR}
+			messages = []string{enum.TokenFormatError.String()}
 			if strings.Contains(err.Error(), "expired") {
-				messages = []string{"トークンの有効期限が切れています"}
+				messages = []string{enum.ExpiredToken.String()}
 			}
 			err := error_handler.ApiErrorHandle(error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
 			c.AbortWithStatusJSON(err.Status, err)

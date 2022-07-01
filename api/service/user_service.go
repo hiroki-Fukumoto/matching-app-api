@@ -11,6 +11,7 @@ import (
 type UserService interface {
 	Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error)
 	PickupToday(targetSex string) (res []*response.UserResponse, err error)
+	FindByID(id string) (res *response.UserResponse, err error)
 }
 
 type userService struct {
@@ -55,6 +56,18 @@ func (uu userService) PickupToday(targetSex string) (res []*response.UserRespons
 		r.ToUserResponse(u)
 		res = append(res, r)
 	}
+
+	return res, nil
+}
+
+func (uu userService) FindByID(id string) (res *response.UserResponse, err error) {
+	user, err := uu.userRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	res = &response.UserResponse{}
+	res.ToUserResponse(user)
 
 	return res, nil
 }
