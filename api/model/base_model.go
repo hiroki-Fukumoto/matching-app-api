@@ -11,7 +11,6 @@ type Base struct {
 	ID        string `gorm:"size:36;primary_key"`
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
-	DeletedAt *time.Time
 }
 
 func (b *Base) BeforeCreate(tx *gorm.DB) (err error) {

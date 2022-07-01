@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	Base
@@ -13,4 +17,5 @@ type User struct {
 	Like       uint16    `gorm:"not null;default:0;comment:いいね数"`
 	Avatar     *string   `gorm:"size:255;comment:アバター画像URL"`
 	Password   []byte    `gorm:"not null'"`
+	DeletedAt  gorm.DeletedAt
 }
