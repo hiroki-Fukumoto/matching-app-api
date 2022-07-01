@@ -27,6 +27,7 @@ const (
 	emailExists = "email_exists"
 	dateFormat  = "date_format"
 	sex         = "sex"
+	prefecture  = "prefecture"
 )
 
 func Init() {
@@ -46,6 +47,7 @@ func Init() {
 	validate.RegisterValidation(emailExists, emailExistsValidator)
 	validate.RegisterValidation(dateFormat, dateFormatValidator)
 	validate.RegisterValidation(sex, sexValidator)
+	validate.RegisterValidation(prefecture, prefectureValidator)
 }
 
 func Validate(i interface{}) error {
@@ -71,6 +73,9 @@ func GetErrorMessages(err error) []string {
 			messages = append(messages, message)
 		case sex:
 			message := "性別が正しくありません"
+			messages = append(messages, message)
+		case prefecture:
+			message := "都道府県が正しくありません"
 			messages = append(messages, message)
 		default:
 			messages = append(messages, m.Translate(trans))
@@ -113,8 +118,20 @@ func sexValidator(field validator.FieldLevel) bool {
 		sex = append(sex, s.(string))
 	}
 
-	fmt.Println(sex)
 	if util.Contains(sex, value) {
+		return true
+	}
+
+	return false
+}
+
+// 都道府県チェック
+func prefectureValidator(field validator.FieldLevel) bool {
+	value := field.Field().Int()
+
+	prefs := util.GetPrefectureCodeList()
+
+	if util.Contains(prefs, value) {
 		return true
 	}
 

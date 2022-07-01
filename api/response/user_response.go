@@ -5,13 +5,21 @@ import (
 	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
 )
 
-type MeResponse struct {
-	ID       string `json:"id" validate:"required"`       // ID
-	Name     string `json:"name" validate:"required"`     // 名前
-	Email    string `json:"email" validate:"required"`    // メールアドレス
-	Sex      string `json:"sex" validate:"required"`      // 性別
-	Birthday string `json:"birthday" validate:"required"` //生年月日
+type Prefecture struct {
+	Code int
+	Name string
+}
 
+type MeResponse struct {
+	ID         string     `json:"id" validate:"required"`         // ID
+	Name       string     `json:"name" validate:"required"`       // 名前
+	Email      string     `json:"email" validate:"required"`      // メールアドレス
+	Sex        string     `json:"sex" validate:"required"`        // 性別
+	Birthday   string     `json:"birthday" validate:"required"`   // 生年月日
+	Message    *string    `json:"message"`                        // メッセージ
+	Avatar     *string    `json:"avatar"`                         // アバター
+	Like       int        `json:"like" validate:"required"`       // いいね数
+	Prefecture Prefecture `json:"prefecture" validate:"required"` // 都道府県
 }
 
 func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
@@ -20,6 +28,13 @@ func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
 	m.Email = u.Email
 	m.Sex = u.Sex
 	m.Birthday = util.FormatDate(u.Birthday)
+	m.Message = u.Message
+	m.Avatar = u.Avatar
+	m.Like = int(u.Like)
+
+	code := int(u.Prefecture)
+	name, _ := util.GetPrefectureName(code)
+	m.Prefecture = Prefecture{Code: code, Name: *name}
 
 	return *m
 }

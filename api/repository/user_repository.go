@@ -30,11 +30,12 @@ func (up *userRepository) Create(req *request.CreateUserRequest) (user *model.Us
 
 	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
 	user = &model.User{
-		Name:     req.Name,
-		Email:    req.Email,
-		Sex:      req.Sex,
-		Birthday: util.ParseDate(req.Birthday),
-		Password: passwordHash,
+		Name:       req.Name,
+		Email:      req.Email,
+		Sex:        req.Sex,
+		Birthday:   util.ParseDate(req.Birthday),
+		Prefecture: uint16(req.Prefecture),
+		Password:   passwordHash,
 	}
 
 	if err := db.Create(&user).Error; err != nil {

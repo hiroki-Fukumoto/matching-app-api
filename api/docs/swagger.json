@@ -226,6 +226,7 @@
                 "email",
                 "name",
                 "password",
+                "prefecture",
                 "sex"
             ],
             "properties": {
@@ -241,6 +242,9 @@
                 "password": {
                     "type": "string",
                     "minLength": 8
+                },
+                "prefecture": {
+                    "type": "integer"
                 },
                 "sex": {
                     "type": "string"
@@ -312,10 +316,16 @@
                 "birthday",
                 "email",
                 "id",
+                "like",
                 "name",
+                "prefecture",
                 "sex"
             ],
             "properties": {
+                "avatar": {
+                    "description": "アバター",
+                    "type": "string"
+                },
                 "birthday": {
                     "description": "生年月日",
                     "type": "string"
@@ -328,15 +338,30 @@
                     "description": "ID",
                     "type": "string"
                 },
+                "like": {
+                    "description": "いいね数",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "メッセージ",
+                    "type": "string"
+                },
                 "name": {
                     "description": "名前",
                     "type": "string"
+                },
+                "prefecture": {
+                    "description": "都道府県",
+                    "$ref": "#/definitions/response.prefecture"
                 },
                 "sex": {
                     "description": "性別",
                     "type": "string"
                 }
             }
+        },
+        "response.prefecture": {
+            "type": "object"
         }
     }
 }
