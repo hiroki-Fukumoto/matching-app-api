@@ -82,5 +82,17 @@ func SetupRouter() *gin.Engine {
 		gUser.GET(":id", c.FindByID)
 	}
 
+	gSendLike := appApiV1.Group("likes")
+	{
+		db := config.Connect()
+		r := repository.NewSendLikeRepository(db)
+		s := service.NewSendLikeService(r)
+		c := controller.NewSendLikeController(s)
+
+		gSendLike.Use(middleware.CheckApiToken())
+		gSendLike.POST("", c.SendLike)
+		gSendLike.DELETE("/cancel", c.CancelLike)
+	}
+
 	return route
 }
