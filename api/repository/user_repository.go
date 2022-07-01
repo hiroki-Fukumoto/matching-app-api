@@ -25,8 +25,8 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{DB: db}
 }
 
-func (up *userRepository) Create(req *request.CreateUserRequest) (user *model.User, err error) {
-	db := up.DB
+func (ur *userRepository) Create(req *request.CreateUserRequest) (user *model.User, err error) {
+	db := ur.DB
 
 	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
 	user = &model.User{
@@ -45,8 +45,8 @@ func (up *userRepository) Create(req *request.CreateUserRequest) (user *model.Us
 	return user, nil
 }
 
-func (up *userRepository) FindByEmail(email string) (user *model.User, err error) {
-	db := up.DB
+func (ur *userRepository) FindByEmail(email string) (user *model.User, err error) {
+	db := ur.DB
 
 	err = db.Where("email = ?", email).First(&user).Error
 
@@ -61,8 +61,8 @@ func (up *userRepository) FindByEmail(email string) (user *model.User, err error
 	return user, nil
 }
 
-func (up *userRepository) FindByID(id string) (user *model.User, err error) {
-	db := up.DB
+func (ur *userRepository) FindByID(id string) (user *model.User, err error) {
+	db := ur.DB
 
 	err = db.Where("id = ?", id).First(&user).Error
 
