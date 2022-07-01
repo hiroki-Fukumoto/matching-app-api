@@ -105,6 +105,87 @@
             }
         },
         "/api/v1/users": {
+            "get": {
+                "description": "50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "ユーザー情報全件取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ページ",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "都道府県",
+                        "name": "prefecture",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "年齢 From",
+                        "name": "from_age",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "年齢 To",
+                        "name": "to_age",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "並び順",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.UserResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "新しいユーザーを作成する",
                 "consumes": [
@@ -226,7 +307,10 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.UserResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.UserResponse"
+                            }
                         }
                     },
                     "401": {

@@ -11,6 +11,7 @@ import (
 type UserService interface {
 	Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error)
 	PickupToday(targetSex string) (res []*response.UserResponse, err error)
+	FindAll(req *request.SearchUserRequest) (res []*response.UserResponse, err error)
 	FindByID(id string) (res *response.UserResponse, err error)
 }
 
@@ -26,8 +27,8 @@ func NewUserService(
 	}
 }
 
-func (uu userService) Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error) {
-	user, err := uu.userRepository.Create(req)
+func (us userService) Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error) {
+	user, err := us.userRepository.Create(req)
 	if err != nil {
 		return nil, err
 	}
@@ -44,8 +45,8 @@ func (uu userService) Create(req *request.CreateUserRequest) (res *response.Logi
 }
 
 // TODO: ピックアップ方法
-func (uu userService) PickupToday(targetSex string) (res []*response.UserResponse, err error) {
-	users, err := uu.userRepository.FindPickUpToday(targetSex)
+func (us userService) PickupToday(targetSex string) (res []*response.UserResponse, err error) {
+	users, err := us.userRepository.FindPickUpToday(targetSex)
 	if err != nil {
 		return nil, err
 	}
@@ -60,8 +61,23 @@ func (uu userService) PickupToday(targetSex string) (res []*response.UserRespons
 	return res, nil
 }
 
-func (uu userService) FindByID(id string) (res *response.UserResponse, err error) {
-	user, err := uu.userRepository.FindByID(id)
+func (us userService) FindAll(req *request.SearchUserRequest) (res []*response.UserResponse, err error) {
+	users, err := us.userRepository.FindAll(req)
+	if err != nil {
+		return nil, err
+	}
+
+	res = []*response.UserResponse{}
+	for _, u := range users {
+		r := &response.UserResponse{}
+		r.ToUserResponse(u)
+		res = append(res, r)
+	}
+	return res, nil
+}
+
+func (us userService) FindByID(id string) (res *response.UserResponse, err error) {
+	user, err := us.userRepository.FindByID(id)
 	if err != nil {
 		return nil, err
 	}

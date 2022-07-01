@@ -78,6 +78,7 @@ func SetupRouter() *gin.Engine {
 		gUser.Use(middleware.CheckApiToken())
 		gUser.GET("info/me", c.Me)
 		gUser.GET("pickup/today", c.PickupToday)
+		gUser.GET("", c.FindAll)
 		gUser.GET(":id", c.FindByID)
 	}
 

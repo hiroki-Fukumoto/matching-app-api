@@ -222,6 +222,60 @@ paths:
       tags:
       - auth
   /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: 50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ページ
+        in: query
+        name: page
+        type: integer
+      - description: 都道府県
+        in: query
+        name: prefecture
+        type: integer
+      - description: 年齢 From
+        in: query
+        name: from_age
+        type: integer
+      - description: 年齢 To
+        in: query
+        name: to_age
+        type: integer
+      - description: 並び順
+        in: query
+        name: sort
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.UserResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: ユーザー情報全件取得
+      tags:
+      - users
     post:
       consumes:
       - application/json
@@ -339,7 +393,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.UserResponse'
+            items:
+              $ref: '#/definitions/response.UserResponse'
+            type: array
         "401":
           description: Unauthorized
           schema:

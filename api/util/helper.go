@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"reflect"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/error_handler"
@@ -59,4 +60,32 @@ func Contains(list interface{}, elem interface{}) bool {
 	}
 
 	return false
+}
+
+// 年齢から誕生月を算出
+func CalcBirthdayMonthFromAge(age int) string {
+	now := time.Now()
+	m := age
+	year := now.Year() - m
+	month := now.Month()
+	day := now.Day()
+	newMonth := int(month)
+	newLastDay := getLastDay(year, newMonth)
+	var newDay int
+	if day > newLastDay {
+		newDay = newLastDay
+	} else {
+		newDay = day
+	}
+
+	d := time.Date(year, time.Month(newMonth), newDay, now.Hour(), now.Minute(), now.Second(), now.Nanosecond(), now.Location())
+	date := FormatDate(d)
+	return date
+
+}
+
+func getLastDay(year, month int) int {
+	t := time.Date(year, time.Month(month+1), 1, 0, 0, 0, 0, time.Local)
+	t = t.AddDate(0, 0, -1)
+	return t.Day()
 }

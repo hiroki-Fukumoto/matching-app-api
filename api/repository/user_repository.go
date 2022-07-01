@@ -16,7 +16,8 @@ type userRepository struct {
 }
 
 type UserRepository interface {
-	Create(request *request.CreateUserRequest) (user *model.User, err error)
+	Create(req *request.CreateUserRequest) (user *model.User, err error)
+	FindAll(req *request.SearchUserRequest) (users []*model.User, err error)
 	FindByEmail(email string) (user *model.User, err error)
 	FindByID(id string) (user *model.User, err error)
 	FindPickUpToday(sex string) (users []*model.User, err error)
@@ -44,6 +45,31 @@ func (ur *userRepository) Create(req *request.CreateUserRequest) (user *model.Us
 	}
 
 	return user, nil
+}
+
+func (ur *userRepository) FindAll(req *request.SearchUserRequest) (users []*model.User, err error) {
+	db := ur.DB
+
+	q := db
+	if req.Prefecture != nil {
+		q = q.Where("prefecture = ?", req.Prefecture)
+	}
+	if req.FromAge != nil {
+		b := util.CalcBirthdayMonthFromAge(*req.FromAge)
+		q = q.Where("birthday <= ?", b)
+	}
+	if req.ToAge != nil {
+		b := util.CalcBirthdayMonthFromAge(*req.ToAge)
+		q = q.Where("birthday >= ?", b)
+	}
+	if req.Sort != nil {
+		q = q.Order("created_at desc")
+	}
+	l := 20
+	if err := q.Limit(l).Offset((req.Page - 1) * l).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (ur *userRepository) FindByEmail(email string) (user *model.User, err error) {
