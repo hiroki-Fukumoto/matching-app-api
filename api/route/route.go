@@ -76,7 +76,8 @@ func SetupRouter() *gin.Engine {
 		gUser.POST("", c.Create)
 
 		gUser.Use(middleware.CheckApiToken())
-		gUser.GET("me", c.Me)
+		gUser.GET("info/me", c.Me)
+		gUser.GET("pickup/today", c.PickupToday)
 	}
 
 	return route

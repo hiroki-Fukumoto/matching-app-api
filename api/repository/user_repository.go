@@ -19,6 +19,7 @@ type UserRepository interface {
 	Create(request *request.CreateUserRequest) (user *model.User, err error)
 	FindByEmail(email string) (user *model.User, err error)
 	FindByID(id string) (user *model.User, err error)
+	FindPickUpToday(sex string) (users []*model.User, err error)
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
@@ -75,4 +76,14 @@ func (ur *userRepository) FindByID(id string) (user *model.User, err error) {
 	}
 
 	return user, nil
+}
+
+func (ur *userRepository) FindPickUpToday(sex string) (users []*model.User, err error) {
+	db := ur.DB
+
+	if err := db.Where("sex = ?", sex).Limit(20).Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

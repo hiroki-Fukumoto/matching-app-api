@@ -97,7 +97,7 @@ definitions:
         description: 名前
         type: string
       prefecture:
-        $ref: '#/definitions/response.prefecture'
+        $ref: '#/definitions/response.PrefectureResponse'
         description: 都道府県
       sex:
         description: 性別
@@ -111,7 +111,46 @@ definitions:
     - prefecture
     - sex
     type: object
-  response.prefecture:
+  response.PrefectureResponse:
+    properties:
+      code:
+        type: integer
+      name:
+        type: string
+    type: object
+  response.UserResponse:
+    properties:
+      avatar:
+        description: アバター
+        type: string
+      birthday:
+        description: 生年月日
+        type: string
+      id:
+        description: ID
+        type: string
+      like:
+        description: いいね数
+        type: integer
+      message:
+        description: メッセージ
+        type: string
+      name:
+        description: 名前
+        type: string
+      prefecture:
+        $ref: '#/definitions/response.PrefectureResponse'
+        description: 都道府県
+      sex:
+        description: 性別
+        type: string
+    required:
+    - birthday
+    - id
+    - like
+    - name
+    - prefecture
+    - sex
     type: object
 host: localhost:8080
 info:
@@ -212,7 +251,7 @@ paths:
       summary: ユーザー新規作成
       tags:
       - users
-  /api/v1/users/me:
+  /api/v1/users/info/me:
     get:
       consumes:
       - application/json
@@ -243,6 +282,39 @@ paths:
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: ログインユーザー情報取得
+      tags:
+      - users
+  /api/v1/users/pickup/today:
+    get:
+      consumes:
+      - application/json
+      description: ログインユーザーとは異なる性別のユーザーを20件返す
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: 本日のピックアップユーザー取得
       tags:
       - users
 swagger: "2.0"

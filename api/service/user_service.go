@@ -10,6 +10,7 @@ import (
 
 type UserService interface {
 	Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error)
+	PickupToday(targetSex string) (res []*response.UserResponse, err error)
 }
 
 type userService struct {
@@ -37,6 +38,23 @@ func (uu userService) Create(req *request.CreateUserRequest) (res *response.Logi
 
 	res = &response.LoginUserResponse{}
 	res.ToLoginUserResponse(user, apiToken)
+
+	return res, nil
+}
+
+// TODO: ピックアップ方法
+func (uu userService) PickupToday(targetSex string) (res []*response.UserResponse, err error) {
+	users, err := uu.userRepository.FindPickUpToday(targetSex)
+	if err != nil {
+		return nil, err
+	}
+
+	res = []*response.UserResponse{}
+	for _, u := range users {
+		r := &response.UserResponse{}
+		r.ToUserResponse(u)
+		res = append(res, r)
+	}
 
 	return res, nil
 }

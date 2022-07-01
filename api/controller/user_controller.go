@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/enum"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/error_handler"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/request"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/response"
@@ -15,6 +16,7 @@ import (
 type UserController interface {
 	Create(c *gin.Context)
 	Me(c *gin.Context)
+	PickupToday(c *gin.Context)
 }
 
 type userController struct {
@@ -68,7 +70,7 @@ func (uc userController) Create(c *gin.Context) {
 // @Failure 401 {object} error_handler.ErrorResponse
 // @Failure 403 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
-// @Router /api/v1/users/me [get]
+// @Router /api/v1/users/info/me [get]
 func (uc userController) Me(c *gin.Context) {
 	user, err := util.GetLoginUser(c)
 
@@ -80,6 +82,43 @@ func (uc userController) Me(c *gin.Context) {
 
 	res := &response.MeResponse{}
 	res.ToMeResponse(user)
+
+	c.JSON(http.StatusOK, res)
+}
+
+// @Summary 本日のピックアップユーザー取得
+// @Description ログインユーザーとは異なる性別のユーザーを20件返す
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
+// @Success 200 {object} response.UserResponse{}
+// @Failure 401 {object} error_handler.ErrorResponse
+// @Failure 403 {object} error_handler.ErrorResponse
+// @Failure 500 {object} error_handler.ErrorResponse
+// @Router /api/v1/users/pickup/today [get]
+func (uc userController) PickupToday(c *gin.Context) {
+	user, err := util.GetLoginUser(c)
+
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err)
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	var targetSex string
+	if user.Sex == enum.SEX.MALE {
+		targetSex = enum.SEX.FEMALE
+	} else {
+		targetSex = enum.SEX.MALE
+	}
+
+	res, err := uc.userService.PickupToday(targetSex)
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err)
+		c.JSON(apiError.Status, apiError)
+		return
+	}
 
 	c.JSON(http.StatusOK, res)
 }

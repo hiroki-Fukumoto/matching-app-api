@@ -158,7 +158,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/me": {
+        "/api/v1/users/info/me": {
             "get": {
                 "description": "ログイン中のユーザー情報を取得する",
                 "consumes": [
@@ -185,6 +185,56 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.MeResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/pickup/today": {
+            "get": {
+                "description": "ログインユーザーとは異なる性別のユーザーを20件返す",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "本日のピックアップユーザー取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.UserResponse"
                         }
                     },
                     "401": {
@@ -360,7 +410,7 @@ const docTemplate = `{
                 },
                 "prefecture": {
                     "description": "都道府県",
-                    "$ref": "#/definitions/response.prefecture"
+                    "$ref": "#/definitions/response.PrefectureResponse"
                 },
                 "sex": {
                     "description": "性別",
@@ -368,8 +418,61 @@ const docTemplate = `{
                 }
             }
         },
-        "response.prefecture": {
-            "type": "object"
+        "response.PrefectureResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UserResponse": {
+            "type": "object",
+            "required": [
+                "birthday",
+                "id",
+                "like",
+                "name",
+                "prefecture",
+                "sex"
+            ],
+            "properties": {
+                "avatar": {
+                    "description": "アバター",
+                    "type": "string"
+                },
+                "birthday": {
+                    "description": "生年月日",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "like": {
+                    "description": "いいね数",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "メッセージ",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名前",
+                    "type": "string"
+                },
+                "prefecture": {
+                    "description": "都道府県",
+                    "$ref": "#/definitions/response.PrefectureResponse"
+                },
+                "sex": {
+                    "description": "性別",
+                    "type": "string"
+                }
+            }
         }
     }
 }`
