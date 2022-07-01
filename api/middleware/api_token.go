@@ -17,19 +17,19 @@ func CheckApiToken() gin.HandlerFunc {
 
 		authorization := c.Request.Header["Authorization"]
 		if authorization == nil {
-			err := error_handler.ApiErrorHandle(error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
+			err := error_handler.ApiErrorHandle("", error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
 			c.AbortWithStatusJSON(err.Status, err)
 			return
 		}
 		slice := strings.Split(authorization[0], " ")
 		if slice[0] != "Bearer" {
-			err := error_handler.ApiErrorHandle(error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
+			err := error_handler.ApiErrorHandle("", error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
 			c.AbortWithStatusJSON(err.Status, err)
 			return
 		}
 		jwt := slice[1]
 		if jwt == "" {
-			err := error_handler.ApiErrorHandle(error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
+			err := error_handler.ApiErrorHandle("", error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
 			c.AbortWithStatusJSON(err.Status, err)
 			return
 		}
@@ -40,7 +40,7 @@ func CheckApiToken() gin.HandlerFunc {
 			if strings.Contains(err.Error(), "expired") {
 				messages = []string{enum.ExpiredToken.String()}
 			}
-			err := error_handler.ApiErrorHandle(error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
+			err := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrForbidden, error_handler.ErrorMessage(messages))
 			c.AbortWithStatusJSON(err.Status, err)
 			return
 		}

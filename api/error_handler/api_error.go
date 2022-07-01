@@ -3,6 +3,7 @@ package error_handler
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/hiroki-Fukumoto/matching-app-api/api/enum"
@@ -33,8 +34,8 @@ func ErrorMessage(messages []string) Option {
 	}
 }
 
-func ApiErrorHandle(err error, options ...Option) *ErrorResponse {
-	fmt.Println(err)
+func ApiErrorHandle(err string, errorKind error, options ...Option) *ErrorResponse {
+	log.Println("API Exception: %s", err)
 
 	opts := &Options{
 		Messages: nil,
@@ -44,7 +45,7 @@ func ApiErrorHandle(err error, options ...Option) *ErrorResponse {
 		option(opts)
 	}
 
-	switch err {
+	switch errorKind {
 	case ErrBadRequest:
 		fmt.Println(opts.Messages)
 		if opts.Messages == nil {

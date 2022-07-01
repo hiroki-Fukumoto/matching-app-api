@@ -41,14 +41,14 @@ func (ac authController) Login(c *gin.Context) {
 	if err := validator.Validate(&request); err != nil {
 		errors := validator.GetErrorMessages(err)
 
-		apiError := error_handler.ApiErrorHandle(error_handler.ErrBadRequest, error_handler.ErrorMessage(errors))
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage(errors))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
 
 	res, err := ac.authService.Login(&request)
 	if err != nil {
-		apiError := error_handler.ApiErrorHandle(error_handler.ErrUnauthorized)
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrUnauthorized)
 		c.JSON(apiError.Status, apiError)
 		return
 	}
