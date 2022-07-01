@@ -10,10 +10,11 @@ import (
 )
 
 var (
-	ErrBadRequest     = errors.New("bad request")
-	ErrUnauthorized   = errors.New("unauthorized")
-	ErrForbidden      = errors.New("forbidden")
-	ErrRecordNotFound = errors.New("record not found")
+	ErrBadRequest          = errors.New("bad request")
+	ErrUnauthorized        = errors.New("unauthorized")
+	ErrForbidden           = errors.New("forbidden")
+	ErrRecordNotFound      = errors.New("record not found")
+	ErrInternalServerError = errors.New("internal server error")
 )
 
 type ErrorResponse struct {

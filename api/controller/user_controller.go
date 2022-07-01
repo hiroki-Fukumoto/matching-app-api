@@ -55,7 +55,7 @@ func (uc userController) Create(c *gin.Context) {
 
 	res, err := uc.userService.Create(&req)
 	if err != nil {
-		apiError := error_handler.ApiErrorHandle(err.Error(), err)
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
@@ -78,7 +78,7 @@ func (uc userController) Me(c *gin.Context) {
 	user, err := util.GetLoginUser(c)
 
 	if err != nil {
-		apiError := error_handler.ApiErrorHandle(err.Error(), err)
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
@@ -104,7 +104,7 @@ func (uc userController) PickupToday(c *gin.Context) {
 	user, err := util.GetLoginUser(c)
 
 	if err != nil {
-		apiError := error_handler.ApiErrorHandle(err.Error(), err)
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
@@ -118,7 +118,7 @@ func (uc userController) PickupToday(c *gin.Context) {
 
 	res, err := uc.userService.PickupToday(targetSex)
 	if err != nil {
-		apiError := error_handler.ApiErrorHandle(err.Error(), err)
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
@@ -199,7 +199,7 @@ func (uc userController) FindAll(c *gin.Context) {
 
 	res, err := uc.userService.FindAll(&req)
 	if err != nil {
-		apiError := error_handler.ApiErrorHandle(err.Error(), err)
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
@@ -229,7 +229,7 @@ func (uc userController) FindByID(c *gin.Context) {
 
 	res, err := uc.userService.FindByID(id)
 	if err != nil {
-		apiError := error_handler.ApiErrorHandle(err.Error(), err)
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
