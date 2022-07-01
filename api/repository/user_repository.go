@@ -6,6 +6,7 @@ import (
 	"github.com/hiroki-Fukumoto/matching-app-api/api/error_handler"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/request"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -31,6 +32,8 @@ func (up *userRepository) Create(req *request.CreateUserRequest) (user *model.Us
 	user = &model.User{
 		Name:     req.Name,
 		Email:    req.Email,
+		Sex:      req.Sex,
+		Birthday: util.ParseDate(req.Birthday),
 		Password: passwordHash,
 	}
 

@@ -9,7 +9,9 @@ import (
 	"github.com/go-playground/locales/ja"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/config"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/enum"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
 	"gopkg.in/go-playground/validator.v9"
 	ja_translations "gopkg.in/go-playground/validator.v9/translations/ja"
 	"gorm.io/gorm"
@@ -24,6 +26,7 @@ var (
 const (
 	emailExists = "email_exists"
 	dateFormat  = "date_format"
+	sex         = "sex"
 )
 
 func Init() {
@@ -42,6 +45,7 @@ func Init() {
 	ja_translations.RegisterDefaultTranslations(validate, trans)
 	validate.RegisterValidation(emailExists, emailExistsValidator)
 	validate.RegisterValidation(dateFormat, dateFormatValidator)
+	validate.RegisterValidation(sex, sexValidator)
 }
 
 func Validate(i interface{}) error {
@@ -65,6 +69,9 @@ func GetErrorMessages(err error) []string {
 		case dateFormat:
 			message := fmt.Sprintf("%sはyyyy-mm-ddの形式にしてください", m.Field())
 			messages = append(messages, message)
+		case sex:
+			message := "性別が正しくありません"
+			messages = append(messages, message)
 		default:
 			messages = append(messages, m.Translate(trans))
 		}
@@ -86,6 +93,28 @@ func emailExistsValidator(field validator.FieldLevel) bool {
 	err := db.Where("email = ?", value).First(&user).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return true
+	}
+
+	return false
+}
+
+// 性別チェック
+func sexValidator(field validator.FieldLevel) bool {
+	value := field.Field().String()
+
+	if value == "" {
+		return true
+	}
+
+	var sex []string
+	sexm, _ := util.StructToJsonTagMap(enum.SEX)
+	for _, s := range sexm {
+		sex = append(sex, s.(string))
+	}
+
+	fmt.Println(sex)
+	if util.Contains(sex, value) {
 		return true
 	}
 

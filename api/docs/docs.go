@@ -230,11 +230,16 @@ const docTemplate = `{
         "request.CreateUserRequest": {
             "type": "object",
             "required": [
+                "birthday",
                 "email",
                 "name",
-                "password"
+                "password",
+                "sex"
             ],
             "properties": {
+                "birthday": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -244,6 +249,9 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "minLength": 8
+                },
+                "sex": {
+                    "type": "string"
                 }
             }
         },
@@ -309,11 +317,17 @@ const docTemplate = `{
         "response.MeResponse": {
             "type": "object",
             "required": [
+                "birthday",
                 "email",
                 "id",
-                "name"
+                "name",
+                "sex"
             ],
             "properties": {
+                "birthday": {
+                    "description": "生年月日",
+                    "type": "string"
+                },
                 "email": {
                     "description": "メールアドレス",
                     "type": "string"
@@ -324,6 +338,10 @@ const docTemplate = `{
                 },
                 "name": {
                     "description": "名前",
+                    "type": "string"
+                },
+                "sex": {
+                    "description": "性別",
                     "type": "string"
                 }
             }

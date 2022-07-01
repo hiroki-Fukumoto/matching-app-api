@@ -12,6 +12,8 @@ definitions:
     type: object
   request.CreateUserRequest:
     properties:
+      birthday:
+        type: string
       email:
         type: string
       name:
@@ -19,10 +21,14 @@ definitions:
       password:
         minLength: 8
         type: string
+      sex:
+        type: string
     required:
+    - birthday
     - email
     - name
     - password
+    - sex
     type: object
   request.LoginRequest:
     properties:
@@ -66,6 +72,9 @@ definitions:
     type: object
   response.MeResponse:
     properties:
+      birthday:
+        description: 生年月日
+        type: string
       email:
         description: メールアドレス
         type: string
@@ -75,10 +84,15 @@ definitions:
       name:
         description: 名前
         type: string
+      sex:
+        description: 性別
+        type: string
     required:
+    - birthday
     - email
     - id
     - name
+    - sex
     type: object
 host: localhost:8080
 info:
