@@ -6,8 +6,8 @@ import (
 )
 
 type PrefectureResponse struct {
-	Code int
-	Name string
+	Code int    `json:"code" validate:"required"` // 都道府県コード
+	Name string `json:"name" validate:"required"` // 都道府県名
 }
 
 func (p *PrefectureResponse) ToPrefectureResponse(u *model.User) PrefectureResponse {

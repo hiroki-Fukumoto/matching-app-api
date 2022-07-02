@@ -17,6 +17,8 @@ type SendLikeRepository interface {
 	CancelLikeRequest() *CancelLikeRequest
 	SendLike(req *SendLikeRequest) error
 	CancelLike(req *CancelLikeRequest) error
+	FindSendLikesRequest() *FindSendLikesRequest
+	FindSendLikes(req *FindSendLikesRequest) (likes []*model.SendLike, err error)
 }
 
 func NewSendLikeRepository(db *gorm.DB) SendLikeRepository {
@@ -72,4 +74,23 @@ func (sr *sendLikeRepository) CancelLike(req *CancelLikeRequest) error {
 	}
 
 	return nil
+}
+
+type FindSendLikesRequest struct {
+	SenderUserId string
+}
+
+func (sr *sendLikeRepository) FindSendLikesRequest() *FindSendLikesRequest {
+	return &FindSendLikesRequest{}
+}
+
+func (sr *sendLikeRepository) FindSendLikes(req *FindSendLikesRequest) (likes []*model.SendLike, err error) {
+	db := sr.DB
+	if err := db.Where("sender_user_id = ?", req.SenderUserId).
+		Preload("Receiver").
+		Order("created_at desc").
+		Find(&likes).Error; err != nil {
+		return nil, err
+	}
+	return likes, nil
 }
