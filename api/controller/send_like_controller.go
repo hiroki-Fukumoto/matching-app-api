@@ -59,13 +59,13 @@ func (sc sendLikeController) SendLike(c *gin.Context) {
 		return
 	}
 
-	if user.Base.ID == req.ReceiverUserID {
+	if user.Base.ID == req.ReceiverID {
 		apiError := error_handler.ApiErrorHandle("", error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{"いいねを送るユーザーと受け取るユーザーが同一です"}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
 
-	err = sc.sendLikeService.SendLike(user.Base.ID, req.ReceiverUserID)
+	err = sc.sendLikeService.SendLike(user.Base.ID, req.ReceiverID)
 	if err != nil {
 		if err.Error() == error_handler.ErrBadRequest.Error() {
 			apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{"既にいいねを送っているユーザーです"}))
@@ -111,7 +111,7 @@ func (sc sendLikeController) CancelLike(c *gin.Context) {
 		return
 	}
 
-	err = sc.sendLikeService.CancelLike(user.Base.ID, req.ReceiverUserID)
+	err = sc.sendLikeService.CancelLike(user.Base.ID, req.ReceiverID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)

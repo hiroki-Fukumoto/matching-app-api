@@ -2,9 +2,9 @@ package model
 
 type SendLike struct {
 	Base
-	SenderUserID   string `gorm:"size:36;index;not null"`
-	ReceiverUserID string `gorm:"size:36;index;not null"`
+	SenderID   string `gorm:"size:36;index;not null"`
+	ReceiverID string `gorm:"size:36;index;not null"`
 
-	Sender   User `gorm:"foreignkey:SenderUserID"`
-	Receiver User `gorm:"foreignkey:ReceiverUserID"`
+	Sender   User `gorm:"foreignkey:SenderID"`
+	Receiver User `gorm:"foreignkey:ReceiverID"`
 }

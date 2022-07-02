@@ -29,8 +29,8 @@ func NewSendLikeRepository(db *gorm.DB) SendLikeRepository {
 }
 
 type SendLikeRequest struct {
-	SenderUserID   string
-	ReceiverUserID string
+	SenderID   string
+	ReceiverID string
 }
 
 func (sr *sendLikeRepository) SendLikeRequest() *SendLikeRequest {
@@ -41,11 +41,11 @@ func (sr *sendLikeRepository) SendLike(req *SendLikeRequest) error {
 	db := sr.DB
 
 	sendLike := &model.SendLike{
-		SenderUserID:   req.SenderUserID,
-		ReceiverUserID: req.ReceiverUserID,
+		SenderID:   req.SenderID,
+		ReceiverID: req.ReceiverID,
 	}
 
-	err := db.Where("sender_user_id = ?", req.SenderUserID).Where("receiver_user_id = ?", req.ReceiverUserID).First(&sendLike).Error
+	err := db.Where("sender_id = ?", req.SenderID).Where("receiver_id = ?", req.ReceiverID).First(&sendLike).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		if err := db.Create(&sendLike).Error; err != nil {
@@ -59,8 +59,8 @@ func (sr *sendLikeRepository) SendLike(req *SendLikeRequest) error {
 }
 
 type CancelLikeRequest struct {
-	SenderUserID   string
-	ReceiverUserID string
+	SenderID   string
+	ReceiverID string
 }
 
 func (sr *sendLikeRepository) CancelLikeRequest() *CancelLikeRequest {
@@ -72,7 +72,7 @@ func (sr *sendLikeRepository) CancelLike(req *CancelLikeRequest) error {
 
 	sendLike := *&model.SendLike{}
 
-	if err := db.Where("sender_user_id = ?", req.SenderUserID).Where("receiver_user_id = ?", req.ReceiverUserID).Delete(&sendLike).Error; err != nil {
+	if err := db.Where("sender_id = ?", req.SenderID).Where("receiver_id = ?", req.ReceiverID).Delete(&sendLike).Error; err != nil {
 		return err
 	}
 
@@ -80,7 +80,7 @@ func (sr *sendLikeRepository) CancelLike(req *CancelLikeRequest) error {
 }
 
 type FindSendLikesRequest struct {
-	SenderUserID string
+	SenderID string
 }
 
 func (sr *sendLikeRepository) FindSendLikesRequest() *FindSendLikesRequest {
@@ -89,7 +89,7 @@ func (sr *sendLikeRepository) FindSendLikesRequest() *FindSendLikesRequest {
 
 func (sr *sendLikeRepository) FindSendLikes(req *FindSendLikesRequest) (likes []*model.SendLike, err error) {
 	db := sr.DB
-	if err := db.Where("sender_user_id = ?", req.SenderUserID).
+	if err := db.Where("sender_id = ?", req.SenderID).
 		Preload("Receiver").
 		Order("created_at desc").
 		Find(&likes).Error; err != nil {
@@ -99,7 +99,7 @@ func (sr *sendLikeRepository) FindSendLikes(req *FindSendLikesRequest) (likes []
 }
 
 type FindReceiveLikesRequest struct {
-	ReceiverUserID string
+	ReceiverID string
 }
 
 func (sr *sendLikeRepository) FindReceiveLikesRequest() *FindReceiveLikesRequest {
@@ -108,7 +108,7 @@ func (sr *sendLikeRepository) FindReceiveLikesRequest() *FindReceiveLikesRequest
 
 func (sr *sendLikeRepository) FindReceiveLikes(req *FindReceiveLikesRequest) (likes []*model.SendLike, err error) {
 	db := sr.DB
-	if err := db.Where("receiver_user_id = ?", req.ReceiverUserID).
+	if err := db.Where("receiver_id = ?", req.ReceiverID).
 		Preload("Sender").
 		Order("created_at desc").
 		Find(&likes).Error; err != nil {
