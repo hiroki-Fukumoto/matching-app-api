@@ -357,6 +357,57 @@
                 }
             }
         },
+        "/api/v1/messages/{id}/read": {
+            "put": {
+                "description": "メッセージを既読にする",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "メッセージを既読にする",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "既読にするメッセージID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "nil"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "description": "50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）",

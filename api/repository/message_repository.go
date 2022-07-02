@@ -14,6 +14,8 @@ type messageRepository struct {
 type MessageRepository interface {
 	SendMessageRequest() *SendMessageRequest
 	SendMessage(req *SendMessageRequest) error
+	ReadMessageRequest() *ReadMessageRequest
+	ReadMessage(req *ReadMessageRequest) error
 }
 
 func NewMessageRepository(db *gorm.DB) MessageRepository {
@@ -40,6 +42,26 @@ func (mr *messageRepository) SendMessage(req *SendMessageRequest) error {
 	}
 
 	if err := db.Create(&message).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type ReadMessageRequest struct {
+	ID string
+}
+
+func (mr *messageRepository) ReadMessageRequest() *ReadMessageRequest {
+	return &ReadMessageRequest{}
+}
+
+func (mr *messageRepository) ReadMessage(req *ReadMessageRequest) error {
+	db := mr.DB
+
+	message := &model.Message{}
+
+	if err := db.Model(&message).Where("id = ?", req.ID).Update("is_read", true).Error; err != nil {
 		return err
 	}
 

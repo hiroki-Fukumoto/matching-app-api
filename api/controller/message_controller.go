@@ -14,6 +14,7 @@ import (
 
 type MessageController interface {
 	SendMessage(c *gin.Context)
+	ReadMessage(c *gin.Context)
 }
 
 type messageController struct {
@@ -63,6 +64,34 @@ func (mc messageController) SendMessage(c *gin.Context) {
 	}
 
 	err = mc.messageService.SendMessage(user.Base.ID, req.ReceiverUserID, req.Message)
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
+}
+
+// @Summary メッセージを既読にする
+// @Description メッセージを既読にする
+// @Tags messages
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
+// @Param id path string true "既読にするメッセージID"
+// @Success 204 nil nil
+// @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 500 {object} error_handler.ErrorResponse
+// @Router /api/v1/messages/{id}/read [put]
+func (mc messageController) ReadMessage(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		apiError := error_handler.ApiErrorHandle("", error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{"IDが指定されていません"}))
+		c.JSON(apiError.Status, apiError)
+	}
+
+	err := mc.messageService.ReadMessage(id)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)

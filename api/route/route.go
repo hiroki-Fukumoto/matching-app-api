@@ -105,6 +105,7 @@ func SetupRouter() *gin.Engine {
 
 		gMessage.Use(middleware.CheckApiToken())
 		gMessage.POST("", c.SendMessage)
+		gMessage.PUT(":id/read", c.ReadMessage)
 	}
 
 	return route

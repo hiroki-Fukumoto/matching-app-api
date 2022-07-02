@@ -6,6 +6,7 @@ import (
 
 type MessageService interface {
 	SendMessage(senderUserID string, receiverUserID string, message string) error
+	ReadMessage(ID string) error
 }
 
 type messageService struct {
@@ -24,6 +25,16 @@ func (ss messageService) SendMessage(senderUserID string, receiverUserID string,
 	req.ReceiverUserID = receiverUserID
 	req.Message = message
 	err := ss.messageRepository.SendMessage(req)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ss messageService) ReadMessage(ID string) error {
+	req := ss.messageRepository.ReadMessageRequest()
+	req.ID = ID
+	err := ss.messageRepository.ReadMessage(req)
 	if err != nil {
 		return err
 	}

@@ -425,6 +425,40 @@ paths:
       summary: メッセージを送る
       tags:
       - messages
+  /api/v1/messages/{id}/read:
+    put:
+      consumes:
+      - application/json
+      description: メッセージを既読にする
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 既読にするメッセージID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: nil
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: メッセージを既読にする
+      tags:
+      - messages
   /api/v1/users:
     get:
       consumes:
