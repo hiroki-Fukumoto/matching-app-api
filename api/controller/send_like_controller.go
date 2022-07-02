@@ -16,6 +16,7 @@ type SendLikeController interface {
 	SendLike(c *gin.Context)
 	CancelLike(c *gin.Context)
 	FindSendLikes(c *gin.Context)
+	FindReceiveLikes(c *gin.Context)
 }
 
 type sendLikeController struct {
@@ -129,7 +130,7 @@ func (sc sendLikeController) CancelLike(c *gin.Context) {
 // @Success 200 {object} []response.SendLikeResponse
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
-// @Router /api/v1/likes [get]
+// @Router /api/v1/likes/send [get]
 func (sc sendLikeController) FindSendLikes(c *gin.Context) {
 	user, err := util.GetLoginUser(c)
 
@@ -140,6 +141,35 @@ func (sc sendLikeController) FindSendLikes(c *gin.Context) {
 	}
 
 	res, err := sc.sendLikeService.FindSendLikes(user.Base.ID)
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// @Summary 受信したいいね一覧を取得する
+// @Description 登録日が新しいもの順で返す
+// @Tags send like
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
+// @Success 200 {object} []response.SendLikeResponse
+// @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 500 {object} error_handler.ErrorResponse
+// @Router /api/v1/likes/receive [get]
+func (sc sendLikeController) FindReceiveLikes(c *gin.Context) {
+	user, err := util.GetLoginUser(c)
+
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	res, err := sc.sendLikeService.FindReceiveLikes(user.Base.ID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)

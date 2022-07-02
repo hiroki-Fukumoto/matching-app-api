@@ -6,9 +6,10 @@ import (
 )
 
 type SendLikeService interface {
-	SendLike(senderUserId string, receiverUserId string) error
-	CancelLike(senderUserId string, receiverUserId string) error
-	FindSendLikes(senderUserId string) (res []*response.SendLikeResponse, err error)
+	SendLike(senderUserID string, receiverUserID string) error
+	CancelLike(senderUserID string, receiverUserID string) error
+	FindSendLikes(senderUserID string) (res []*response.SendLikeResponse, err error)
+	FindReceiveLikes(receiverUserID string) (res []*response.ReceiveLikeResponse, err error)
 }
 
 type sendLikeService struct {
@@ -21,10 +22,10 @@ func NewSendLikeService(sr repository.SendLikeRepository) SendLikeService {
 	}
 }
 
-func (ss sendLikeService) SendLike(senderUserId string, receiverUserId string) error {
+func (ss sendLikeService) SendLike(senderUserID string, receiverUserID string) error {
 	req := ss.sendLikeRepository.SendLikeRequest()
-	req.SenderUserId = senderUserId
-	req.ReceiverUserId = receiverUserId
+	req.SenderUserID = senderUserID
+	req.ReceiverUserID = receiverUserID
 	err := ss.sendLikeRepository.SendLike(req)
 	if err != nil {
 		return err
@@ -32,10 +33,10 @@ func (ss sendLikeService) SendLike(senderUserId string, receiverUserId string) e
 	return nil
 }
 
-func (ss sendLikeService) CancelLike(senderUserId string, receiverUserId string) error {
+func (ss sendLikeService) CancelLike(senderUserID string, receiverUserID string) error {
 	req := ss.sendLikeRepository.CancelLikeRequest()
-	req.SenderUserId = senderUserId
-	req.ReceiverUserId = receiverUserId
+	req.SenderUserID = senderUserID
+	req.ReceiverUserID = receiverUserID
 	err := ss.sendLikeRepository.CancelLike(req)
 	if err != nil {
 		return err
@@ -43,9 +44,9 @@ func (ss sendLikeService) CancelLike(senderUserId string, receiverUserId string)
 	return nil
 }
 
-func (ss sendLikeService) FindSendLikes(senderUserId string) (res []*response.SendLikeResponse, err error) {
+func (ss sendLikeService) FindSendLikes(senderUserID string) (res []*response.SendLikeResponse, err error) {
 	req := ss.sendLikeRepository.FindSendLikesRequest()
-	req.SenderUserId = senderUserId
+	req.SenderUserID = senderUserID
 	likes, err := ss.sendLikeRepository.FindSendLikes(req)
 	if err != nil {
 		return nil, err
@@ -54,6 +55,23 @@ func (ss sendLikeService) FindSendLikes(senderUserId string) (res []*response.Se
 	for _, l := range likes {
 		r := &response.SendLikeResponse{}
 		r.ToSendLikeResponse(l)
+		res = append(res, r)
+	}
+
+	return res, nil
+}
+
+func (ss sendLikeService) FindReceiveLikes(receiverUserID string) (res []*response.ReceiveLikeResponse, err error) {
+	req := ss.sendLikeRepository.FindReceiveLikesRequest()
+	req.ReceiverUserID = receiverUserID
+	likes, err := ss.sendLikeRepository.FindReceiveLikes(req)
+	if err != nil {
+		return nil, err
+	}
+	res = []*response.ReceiveLikeResponse{}
+	for _, l := range likes {
+		r := &response.ReceiveLikeResponse{}
+		r.ToReceiveLikeResponse(l)
 		res = append(res, r)
 	}
 

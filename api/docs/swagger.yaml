@@ -122,18 +122,26 @@ definitions:
   response.PrefectureResponse:
     properties:
       code:
+        description: 都道府県コード
         type: integer
       name:
+        description: 都道府県名
         type: string
+    required:
+    - code
+    - name
     type: object
   response.SendLikeResponse:
     properties:
       receiver:
         $ref: '#/definitions/response.UserResponse'
         description: 受け取り手
-      sentAt:
+      sent_at:
         description: 送信日時
         type: string
+    required:
+    - receiver
+    - sent_at
     type: object
   response.UserResponse:
     properties:
@@ -205,36 +213,6 @@ paths:
       tags:
       - initial
   /api/v1/likes:
-    get:
-      consumes:
-      - application/json
-      description: 登録日が新しいもの順で返す
-      parameters:
-      - description: ログイン時に取得したIDトークン(Bearer)
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/response.SendLikeResponse'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/error_handler.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/error_handler.ErrorResponse'
-      summary: 送信したいいね一覧を取得する
-      tags:
-      - send like
     post:
       consumes:
       - application/json
@@ -302,6 +280,68 @@ paths:
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: いいねを取り消す
+      tags:
+      - send like
+  /api/v1/likes/receive:
+    get:
+      consumes:
+      - application/json
+      description: 登録日が新しいもの順で返す
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.SendLikeResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: 受信したいいね一覧を取得する
+      tags:
+      - send like
+  /api/v1/likes/send:
+    get:
+      consumes:
+      - application/json
+      description: 登録日が新しいもの順で返す
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.SendLikeResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: 送信したいいね一覧を取得する
       tags:
       - send like
   /api/v1/login:

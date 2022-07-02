@@ -90,9 +90,10 @@ func SetupRouter() *gin.Engine {
 		c := controller.NewSendLikeController(s)
 
 		gSendLike.Use(middleware.CheckApiToken())
-		gSendLike.GET("", c.FindSendLikes)
 		gSendLike.POST("", c.SendLike)
 		gSendLike.DELETE("/cancel", c.CancelLike)
+		gSendLike.GET("/send", c.FindSendLikes)
+		gSendLike.GET("/receive", c.FindReceiveLikes)
 	}
 
 	return route

@@ -61,51 +61,6 @@ const docTemplate = `{
             }
         },
         "/api/v1/likes": {
-            "get": {
-                "description": "登録日が新しいもの順で返す",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "send like"
-                ],
-                "summary": "送信したいいね一覧を取得する",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ログイン時に取得したIDトークン(Bearer)",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/response.SendLikeResponse"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "いいねを送る",
                 "consumes": [
@@ -194,6 +149,100 @@ const docTemplate = `{
                         "description": "No Content",
                         "schema": {
                             "type": "nil"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/likes/receive": {
+            "get": {
+                "description": "登録日が新しいもの順で返す",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "send like"
+                ],
+                "summary": "受信したいいね一覧を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.SendLikeResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/likes/send": {
+            "get": {
+                "description": "登録日が新しいもの順で返す",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "send like"
+                ],
+                "summary": "送信したいいね一覧を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.SendLikeResponse"
+                            }
                         }
                     },
                     "400": {
@@ -724,23 +773,33 @@ const docTemplate = `{
         },
         "response.PrefectureResponse": {
             "type": "object",
+            "required": [
+                "code",
+                "name"
+            ],
             "properties": {
                 "code": {
+                    "description": "都道府県コード",
                     "type": "integer"
                 },
                 "name": {
+                    "description": "都道府県名",
                     "type": "string"
                 }
             }
         },
         "response.SendLikeResponse": {
             "type": "object",
+            "required": [
+                "receiver",
+                "sent_at"
+            ],
             "properties": {
                 "receiver": {
                     "description": "受け取り手",
                     "$ref": "#/definitions/response.UserResponse"
                 },
-                "sentAt": {
+                "sent_at": {
                     "description": "送信日時",
                     "type": "string"
                 }
