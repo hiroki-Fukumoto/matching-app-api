@@ -20,7 +20,10 @@ func NewSendLikeService(sr repository.SendLikeRepository) SendLikeService {
 }
 
 func (ss sendLikeService) SendLike(senderUserId string, receiverUserId string) error {
-	err := ss.sendLikeRepository.SendLike(senderUserId, receiverUserId)
+	req := ss.sendLikeRepository.SendLikeRequest()
+	req.SenderUserId = senderUserId
+	req.ReceiverUserId = receiverUserId
+	err := ss.sendLikeRepository.SendLike(req)
 	if err != nil {
 		return err
 	}
@@ -28,7 +31,10 @@ func (ss sendLikeService) SendLike(senderUserId string, receiverUserId string) e
 }
 
 func (ss sendLikeService) CancelLike(senderUserId string, receiverUserId string) error {
-	err := ss.sendLikeRepository.CancelLike(senderUserId, receiverUserId)
+	req := ss.sendLikeRepository.CancelLikeRequest()
+	req.SenderUserId = senderUserId
+	req.ReceiverUserId = receiverUserId
+	err := ss.sendLikeRepository.CancelLike(req)
 	if err != nil {
 		return err
 	}

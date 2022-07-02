@@ -13,39 +13,61 @@ type sendLikeRepository struct {
 }
 
 type SendLikeRepository interface {
-	SendLike(senderUserId string, receiverUserId string) error
-	CancelLike(senderUserId string, receiverUserId string) error
+	SendLikeRequest() *SendLikeRequest
+	CancelLikeRequest() *CancelLikeRequest
+	SendLike(req *SendLikeRequest) error
+	CancelLike(req *CancelLikeRequest) error
 }
 
 func NewSendLikeRepository(db *gorm.DB) SendLikeRepository {
 	return &sendLikeRepository{DB: db}
 }
 
-func (sr *sendLikeRepository) SendLike(senderUserId string, receiverUserId string) error {
+type SendLikeRequest struct {
+	SenderUserId   string
+	ReceiverUserId string
+}
+
+func (sr *sendLikeRepository) SendLikeRequest() *SendLikeRequest {
+	return &SendLikeRequest{}
+}
+
+func (sr *sendLikeRepository) SendLike(req *SendLikeRequest) error {
 	db := sr.DB
 
 	sendLike := &model.SendLike{
-		SenderUserID:   senderUserId,
-		ReceiverUserID: receiverUserId,
+		SenderUserID:   req.SenderUserId,
+		ReceiverUserID: req.ReceiverUserId,
 	}
 
-	err := db.Where("sender_user_id = ?", senderUserId).Where("receiver_user_id = ?", receiverUserId).First(&sendLike).Error
+	err := db.Where("sender_user_id = ?", req.SenderUserId).Where("receiver_user_id = ?", req.ReceiverUserId).First(&sendLike).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		if err := db.Create(&sendLike).Error; err != nil {
 			return err
+		} else {
+			return nil
 		}
 	}
 
 	return error_handler.ErrBadRequest
 }
 
-func (sr *sendLikeRepository) CancelLike(senderUserId string, receiverUserId string) error {
+type CancelLikeRequest struct {
+	SenderUserId   string
+	ReceiverUserId string
+}
+
+func (sr *sendLikeRepository) CancelLikeRequest() *CancelLikeRequest {
+	return &CancelLikeRequest{}
+}
+
+func (sr *sendLikeRepository) CancelLike(req *CancelLikeRequest) error {
 	db := sr.DB
 
 	sendLike := *&model.SendLike{}
 
-	if err := db.Where("sender_user_id = ?", senderUserId).Where("receiver_user_id = ?", receiverUserId).Delete(&sendLike).Error; err != nil {
+	if err := db.Where("sender_user_id = ?", req.SenderUserId).Where("receiver_user_id = ?", req.ReceiverUserId).Delete(&sendLike).Error; err != nil {
 		return err
 	}
 
