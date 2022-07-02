@@ -2,12 +2,11 @@ package repository
 
 import (
 	"errors"
+	"time"
 
 	"github.com/hiroki-Fukumoto/matching-app-api/api/error_handler"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
-	"github.com/hiroki-Fukumoto/matching-app-api/api/request"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -16,28 +15,45 @@ type userRepository struct {
 }
 
 type UserRepository interface {
-	Create(req *request.CreateUserRequest) (user *model.User, err error)
-	FindAll(req *request.SearchUserRequest) (users []*model.User, err error)
-	FindByEmail(email string) (user *model.User, err error)
-	FindByID(id string) (user *model.User, err error)
-	FindPickUpToday(sex string) (users []*model.User, err error)
+	CreateRequest() *CreateRequest
+	Create(req *CreateRequest) (user *model.User, err error)
+	FindAllRequest() *FindAllRequest
+	FindAll(req *FindAllRequest) (users []*model.User, err error)
+	FindByEmailRequest() *FindByEmailRequest
+	FindByEmail(req *FindByEmailRequest) (user *model.User, err error)
+	FindByIDRequest() *FindByIDRequest
+	FindByID(req *FindByIDRequest) (user *model.User, err error)
+	FindPickUpTodayRequest() *FindPickUpTodayRequest
+	FindPickUpToday(req *FindPickUpTodayRequest) (users []*model.User, err error)
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{DB: db}
 }
 
-func (ur *userRepository) Create(req *request.CreateUserRequest) (user *model.User, err error) {
+type CreateRequest struct {
+	Name       string
+	Email      string
+	Sex        string
+	Birthday   time.Time
+	Prefecture uint16
+	Password   []byte
+}
+
+func (ur *userRepository) CreateRequest() *CreateRequest {
+	return &CreateRequest{}
+}
+
+func (ur *userRepository) Create(req *CreateRequest) (user *model.User, err error) {
 	db := ur.DB
 
-	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
 	user = &model.User{
 		Name:       req.Name,
 		Email:      req.Email,
 		Sex:        req.Sex,
-		Birthday:   util.ParseDate(req.Birthday),
-		Prefecture: uint16(req.Prefecture),
-		Password:   passwordHash,
+		Birthday:   req.Birthday,
+		Prefecture: req.Prefecture,
+		Password:   req.Password,
 	}
 
 	if err := db.Create(&user).Error; err != nil {
@@ -47,7 +63,19 @@ func (ur *userRepository) Create(req *request.CreateUserRequest) (user *model.Us
 	return user, nil
 }
 
-func (ur *userRepository) FindAll(req *request.SearchUserRequest) (users []*model.User, err error) {
+type FindAllRequest struct {
+	Page       int
+	FromAge    *int
+	ToAge      *int
+	Prefecture *int
+	Sort       *int
+}
+
+func (ur *userRepository) FindAllRequest() *FindAllRequest {
+	return &FindAllRequest{}
+}
+
+func (ur *userRepository) FindAll(req *FindAllRequest) (users []*model.User, err error) {
 	db := ur.DB
 
 	q := db
@@ -72,10 +100,18 @@ func (ur *userRepository) FindAll(req *request.SearchUserRequest) (users []*mode
 	return users, nil
 }
 
-func (ur *userRepository) FindByEmail(email string) (user *model.User, err error) {
+type FindByEmailRequest struct {
+	Email string
+}
+
+func (ur *userRepository) FindByEmailRequest() *FindByEmailRequest {
+	return &FindByEmailRequest{}
+}
+
+func (ur *userRepository) FindByEmail(req *FindByEmailRequest) (user *model.User, err error) {
 	db := ur.DB
 
-	err = db.Where("email = ?", email).First(&user).Error
+	err = db.Where("email = ?", req.Email).First(&user).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, error_handler.ErrRecordNotFound
@@ -88,10 +124,18 @@ func (ur *userRepository) FindByEmail(email string) (user *model.User, err error
 	return user, nil
 }
 
-func (ur *userRepository) FindByID(id string) (user *model.User, err error) {
+type FindByIDRequest struct {
+	ID string
+}
+
+func (ur *userRepository) FindByIDRequest() *FindByIDRequest {
+	return &FindByIDRequest{}
+}
+
+func (ur *userRepository) FindByID(req *FindByIDRequest) (user *model.User, err error) {
 	db := ur.DB
 
-	err = db.Where("id = ?", id).First(&user).Error
+	err = db.Where("id = ?", req.ID).First(&user).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, error_handler.ErrRecordNotFound
@@ -104,10 +148,18 @@ func (ur *userRepository) FindByID(id string) (user *model.User, err error) {
 	return user, nil
 }
 
-func (ur *userRepository) FindPickUpToday(sex string) (users []*model.User, err error) {
+type FindPickUpTodayRequest struct {
+	Sex string
+}
+
+func (ur *userRepository) FindPickUpTodayRequest() *FindPickUpTodayRequest {
+	return &FindPickUpTodayRequest{}
+}
+
+func (ur *userRepository) FindPickUpToday(req *FindPickUpTodayRequest) (users []*model.User, err error) {
 	db := ur.DB
 
-	if err := db.Where("sex = ?", sex).Limit(20).Find(&users).Error; err != nil {
+	if err := db.Where("sex = ?", req.Sex).Limit(20).Find(&users).Error; err != nil {
 		return nil, err
 	}
 

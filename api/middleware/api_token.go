@@ -47,7 +47,9 @@ func CheckApiToken() gin.HandlerFunc {
 
 		ur := repository.NewUserRepository(config.Connect())
 
-		loginUser, err := ur.FindByID(auth.UserID)
+		req := ur.FindByIDRequest()
+		req.ID = auth.UserID
+		loginUser, err := ur.FindByID(req)
 
 		c.Set("AuthorizedUser", loginUser)
 		c.Next()

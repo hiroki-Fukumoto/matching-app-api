@@ -155,7 +155,7 @@ func (uc userController) FindAll(c *gin.Context) {
 
 	prefecture := c.Query("prefecture")
 	if prefecture != "" {
-		p, err := strconv.Atoi(c.Query("from_age"))
+		p, err := strconv.Atoi(c.Query("prefecture"))
 		req.Prefecture = &p
 		if err != nil {
 			apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))

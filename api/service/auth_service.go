@@ -24,7 +24,9 @@ func NewAuthService(ur repository.UserRepository) AuthService {
 
 func (as authService) Login(req *request.LoginRequest) (res *response.LoginUserResponse, err error) {
 	// メールアドレスからユーザー取得
-	user, err := as.userRepository.FindByEmail(req.Email)
+	r := as.userRepository.FindByEmailRequest()
+	r.Email = req.Email
+	user, err := as.userRepository.FindByEmail(r)
 	if err != nil {
 		return nil, err
 	}

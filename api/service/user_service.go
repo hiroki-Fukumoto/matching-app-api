@@ -4,6 +4,7 @@ import (
 	"github.com/hiroki-Fukumoto/matching-app-api/api/repository"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/request"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/response"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
 )
@@ -28,7 +29,16 @@ func NewUserService(
 }
 
 func (us userService) Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error) {
-	user, err := us.userRepository.Create(req)
+	r := us.userRepository.CreateRequest()
+	r.Name = req.Name
+	r.Email = req.Email
+	r.Sex = req.Sex
+	r.Birthday = util.ParseDate(req.Birthday)
+	r.Prefecture = uint16(req.Prefecture)
+	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
+	r.Password = passwordHash
+
+	user, err := us.userRepository.Create(r)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +56,9 @@ func (us userService) Create(req *request.CreateUserRequest) (res *response.Logi
 
 // TODO: ピックアップ方法
 func (us userService) PickupToday(targetSex string) (res []*response.UserResponse, err error) {
-	users, err := us.userRepository.FindPickUpToday(targetSex)
+	r := us.userRepository.FindPickUpTodayRequest()
+	r.Sex = targetSex
+	users, err := us.userRepository.FindPickUpToday(r)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +74,13 @@ func (us userService) PickupToday(targetSex string) (res []*response.UserRespons
 }
 
 func (us userService) FindAll(req *request.SearchUserRequest) (res []*response.UserResponse, err error) {
-	users, err := us.userRepository.FindAll(req)
+	r := us.userRepository.FindAllRequest()
+	r.Page = req.Page
+	r.FromAge = req.FromAge
+	r.ToAge = req.ToAge
+	r.Prefecture = req.Prefecture
+	r.Sort = req.Sort
+	users, err := us.userRepository.FindAll(r)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +95,9 @@ func (us userService) FindAll(req *request.SearchUserRequest) (res []*response.U
 }
 
 func (us userService) FindByID(id string) (res *response.UserResponse, err error) {
-	user, err := us.userRepository.FindByID(id)
+	r := us.userRepository.FindByIDRequest()
+	r.ID = id
+	user, err := us.userRepository.FindByID(r)
 	if err != nil {
 		return nil, err
 	}
