@@ -12,6 +12,8 @@ type messageRepository struct {
 }
 
 type MessageRepository interface {
+	FindMessagesRequest() *FindMessagesRequest
+	FindReceiveMessages(req *FindMessagesRequest) (messages []*model.Message, err error)
 	SendMessageRequest() *SendMessageRequest
 	SendMessage(req *SendMessageRequest) error
 	ReadMessageRequest() *ReadMessageRequest
@@ -22,10 +24,31 @@ func NewMessageRepository(db *gorm.DB) MessageRepository {
 	return &messageRepository{DB: db}
 }
 
+type FindMessagesRequest struct {
+	ReceiverID string
+}
+
+func (mr *messageRepository) FindMessagesRequest() *FindMessagesRequest {
+	return &FindMessagesRequest{}
+}
+
+func (mr *messageRepository) FindReceiveMessages(req *FindMessagesRequest) (messages []*model.Message, err error) {
+	db := mr.DB
+
+	if err := db.Where("receiver_id = ?", req.ReceiverID).
+		Preload("Sender").
+		Group("sender_id").
+		Order("created_at desc").
+		Find(&messages).Error; err != nil {
+		return nil, err
+	}
+	return messages, nil
+}
+
 type SendMessageRequest struct {
-	SenderUserID   string
-	ReceiverUserID string
-	Message        string
+	SenderID   string
+	ReceiverID string
+	Message    string
 }
 
 func (mr *messageRepository) SendMessageRequest() *SendMessageRequest {
@@ -36,9 +59,9 @@ func (mr *messageRepository) SendMessage(req *SendMessageRequest) error {
 	db := mr.DB
 
 	message := &model.Message{
-		SenderUserID:   req.SenderUserID,
-		ReceiverUserID: req.ReceiverUserID,
-		Message:        html.EscapeString(req.Message),
+		SenderID:   req.SenderID,
+		ReceiverID: req.ReceiverID,
+		Message:    html.EscapeString(req.Message),
 	}
 
 	if err := db.Create(&message).Error; err != nil {

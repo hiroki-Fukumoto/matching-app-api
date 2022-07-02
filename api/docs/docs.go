@@ -313,6 +313,51 @@ const docTemplate = `{
             }
         },
         "/api/v1/messages": {
+            "get": {
+                "description": "送信者別の受信メッセージ(最新の1通のみ)を受信日が最新のもの順に返す。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "受信済みメッセージを取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.MessageResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "メッセージを送る",
                 "consumes": [
@@ -772,10 +817,10 @@ const docTemplate = `{
         "request.SendLikeRequest": {
             "type": "object",
             "required": [
-                "receiver_user_id"
+                "receiver_id"
             ],
             "properties": {
-                "receiver_user_id": {
+                "receiver_id": {
                     "description": "いいねを受け取るユーザー",
                     "type": "string"
                 }
@@ -785,14 +830,14 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "message",
-                "receiver_user_id"
+                "receiver_id"
             ],
             "properties": {
                 "message": {
                     "description": "メッセージ",
                     "type": "string"
                 },
-                "receiver_user_id": {
+                "receiver_id": {
                     "description": "メッセージを受け取るユーザー",
                     "type": "string"
                 }
@@ -888,6 +933,28 @@ const docTemplate = `{
                 },
                 "sex": {
                     "description": "性別",
+                    "type": "string"
+                }
+            }
+        },
+        "response.MessageResponse": {
+            "type": "object",
+            "required": [
+                "message",
+                "sender",
+                "sent_at"
+            ],
+            "properties": {
+                "message": {
+                    "description": "メッセージ",
+                    "type": "string"
+                },
+                "sender": {
+                    "description": "送り手",
+                    "$ref": "#/definitions/response.UserResponse"
+                },
+                "sent_at": {
+                    "description": "受信日時",
                     "type": "string"
                 }
             }

@@ -13,6 +13,7 @@ import (
 )
 
 type MessageController interface {
+	FindReceiveMessages(c *gin.Context)
 	SendMessage(c *gin.Context)
 	ReadMessage(c *gin.Context)
 }
@@ -25,6 +26,35 @@ func NewMessageController(us service.MessageService) MessageController {
 	return &messageController{
 		messageService: us,
 	}
+}
+
+// @Summary 受信済みメッセージを取得
+// @Description 送信者別の受信メッセージ(最新の1通のみ)を受信日が最新のもの順に返す。
+// @Tags messages
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
+// @Success 200 {object} []response.MessageResponse
+// @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 500 {object} error_handler.ErrorResponse
+// @Router /api/v1/messages [get]
+func (mc messageController) FindReceiveMessages(c *gin.Context) {
+	user, err := util.GetLoginUser(c)
+
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	res, err := mc.messageService.FindReceiveMessages(user.Base.ID)
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
 }
 
 // @Summary メッセージを送る
@@ -57,13 +87,13 @@ func (mc messageController) SendMessage(c *gin.Context) {
 		return
 	}
 
-	if user.Base.ID == req.ReceiverUserID {
+	if user.Base.ID == req.ReceiverID {
 		apiError := error_handler.ApiErrorHandle("", error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{"メッセージを送るユーザーと受け取るユーザーが同一です"}))
 		c.JSON(apiError.Status, apiError)
 		return
 	}
 
-	err = mc.messageService.SendMessage(user.Base.ID, req.ReceiverUserID, req.Message)
+	err = mc.messageService.SendMessage(user.Base.ID, req.ReceiverID, req.Message)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
