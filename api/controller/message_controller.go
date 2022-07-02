@@ -34,7 +34,7 @@ func NewMessageController(us service.MessageService) MessageController {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
-// @Success 200 {object} []response.MessageResponse
+// @Success 200 {object} []response.ReceiveMessageResponse
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/messages [get]
@@ -64,7 +64,7 @@ func (mc messageController) FindReceiveMessages(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
 // @Param request body request.SendMessageRequest true "メッセージを送る情報"
-// @Success 204 nil nil
+// @Success 204 {object} nil
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/messages [post]
@@ -110,7 +110,7 @@ func (mc messageController) SendMessage(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
 // @Param id path string true "既読にするメッセージID"
-// @Success 204 nil nil
+// @Success 204 {object} nil
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/messages/{id}/read [put]

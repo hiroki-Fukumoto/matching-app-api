@@ -131,22 +131,6 @@ definitions:
     - prefecture
     - sex
     type: object
-  response.MessageResponse:
-    properties:
-      message:
-        description: メッセージ
-        type: string
-      sender:
-        $ref: '#/definitions/response.UserResponse'
-        description: 送り手
-      sent_at:
-        description: 受信日時
-        type: string
-    required:
-    - message
-    - sender
-    - sent_at
-    type: object
   response.PrefectureResponse:
     properties:
       code:
@@ -158,6 +142,22 @@ definitions:
     required:
     - code
     - name
+    type: object
+  response.ReceiveMessageResponse:
+    properties:
+      message:
+        description: メッセージ
+        type: string
+      receive_at:
+        description: 受信日時
+        type: string
+      sender:
+        $ref: '#/definitions/response.UserResponse'
+        description: 送り手
+    required:
+    - message
+    - receive_at
+    - sender
     type: object
   response.SendLikeResponse:
     properties:
@@ -262,8 +262,6 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: nil
         "400":
           description: Bad Request
           schema:
@@ -275,7 +273,7 @@ paths:
       summary: いいねを送る
       tags:
       - send like
-  /api/v1/likes/cancel:
+  /api/v1/likes/{receiverID}/cancel:
     delete:
       consumes:
       - application/json
@@ -286,19 +284,16 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: いいねを取り消す情報
-        in: body
-        name: request
+      - description: 取り消しにするユーザーID
+        in: path
+        name: receiverID
         required: true
-        schema:
-          $ref: '#/definitions/request.SendLikeRequest'
+        type: string
       produces:
       - application/json
       responses:
         "204":
           description: No Content
-          schema:
-            type: nil
         "400":
           description: Bad Request
           schema:
@@ -424,7 +419,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/response.MessageResponse'
+              $ref: '#/definitions/response.ReceiveMessageResponse'
             type: array
         "400":
           description: Bad Request
@@ -458,8 +453,6 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: nil
         "400":
           description: Bad Request
           schema:
@@ -492,8 +485,6 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: nil
         "400":
           description: Bad Request
           schema:

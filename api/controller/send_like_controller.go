@@ -36,7 +36,7 @@ func NewSendLikeController(us service.SendLikeService) SendLikeController {
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
 // @Param request body request.SendLikeRequest true "いいねを送る情報"
-// @Success 204 nil nil
+// @Success 204 {object} nil
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes [post]
@@ -87,20 +87,16 @@ func (sc sendLikeController) SendLike(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
-// @Param request body request.SendLikeRequest true "いいねを取り消す情報"
-// @Success 204 nil nil
+// @Param receiverID path string true "取り消しにするユーザーID"
+// @Success 204 {object} nil
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
-// @Router /api/v1/likes/cancel [delete]
+// @Router /api/v1/likes/{receiverID}/cancel [delete]
 func (sc sendLikeController) CancelLike(c *gin.Context) {
-	var req request.SendLikeRequest
-	c.BindJSON(&req)
-	if err := validator.Validate(&req); err != nil {
-		errors := validator.GetErrorMessages(err)
-
-		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage(errors))
+	receiverID := c.Param("receiverID")
+	if receiverID == "" {
+		apiError := error_handler.ApiErrorHandle("", error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{"IDが指定されていません"}))
 		c.JSON(apiError.Status, apiError)
-		return
 	}
 
 	user, err := util.GetLoginUser(c)
@@ -111,7 +107,7 @@ func (sc sendLikeController) CancelLike(c *gin.Context) {
 		return
 	}
 
-	err = sc.sendLikeService.CancelLike(user.Base.ID, req.ReceiverID)
+	err = sc.sendLikeService.CancelLike(user.Base.ID, receiverID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)

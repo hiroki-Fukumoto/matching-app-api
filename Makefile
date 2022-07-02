@@ -26,3 +26,5 @@ exec-db:
 # http://localhost:8080/swagger/index.html
 generate-api-doc:
 	docker-compose -f ./docker-compose.yml exec api /bin/bash -c "go get -u github.com/swaggo/swag/cmd/swag && swag init ./main.go"
+	npm i swagger2openapi
+	swagger2openapi --outfile ./api/docs/v3/openapi.yaml ./api/docs/swagger.yaml

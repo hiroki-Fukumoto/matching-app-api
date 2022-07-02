@@ -1,0 +1,732 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  description: Matching app
+  title: Matching app
+  version: "1.0"
+paths:
+  /api/v1/health-check:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      summary: health check
+      tags:
+        - health check
+  /api/v1/initial:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.InitialResponse"
+      summary: アプリ起動時にコールする
+      tags:
+        - initial
+  /api/v1/likes:
+    post:
+      description: いいねを送る
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.SendLikeRequest"
+        description: いいねを送る情報
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: いいねを送る
+      tags:
+        - send like
+  "/api/v1/likes/{receiverID}/cancel":
+    delete:
+      description: いいねを取り消す
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 取り消しにするユーザーID
+          in: path
+          name: receiverID
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: いいねを取り消す
+      tags:
+        - send like
+  /api/v1/likes/receive:
+    get:
+      description: 登録日が新しいもの順で返す
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/response.SendLikeResponse"
+                type: array
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: 受信したいいね一覧を取得する
+      tags:
+        - send like
+  /api/v1/likes/send:
+    get:
+      description: 登録日が新しいもの順で返す
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/response.SendLikeResponse"
+                type: array
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: 送信したいいね一覧を取得する
+      tags:
+        - send like
+  /api/v1/login:
+    post:
+      description: ログイン処理を行う。JWTを新たに発行する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.LoginRequest"
+        description: ログイン情報
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.LoginUserResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: ログイン
+      tags:
+        - auth
+  /api/v1/messages:
+    get:
+      description: 送信者別の受信メッセージ(最新の1通のみ)を受信日が最新のもの順に返す。
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/response.ReceiveMessageResponse"
+                type: array
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: 受信済みメッセージを取得
+      tags:
+        - messages
+    post:
+      description: メッセージを送る
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.SendMessageRequest"
+        description: メッセージを送る情報
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: メッセージを送る
+      tags:
+        - messages
+  "/api/v1/messages/{id}/read":
+    put:
+      description: メッセージを既読にする
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 既読にするメッセージID
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: メッセージを既読にする
+      tags:
+        - messages
+  /api/v1/users:
+    get:
+      description: 50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: ページ
+          in: query
+          name: page
+          schema:
+            type: integer
+        - description: 都道府県
+          in: query
+          name: prefecture
+          schema:
+            type: integer
+        - description: 年齢 From
+          in: query
+          name: from_age
+          schema:
+            type: integer
+        - description: 年齢 To
+          in: query
+          name: to_age
+          schema:
+            type: integer
+        - description: 並び順
+          in: query
+          name: sort
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/response.UserResponse"
+                type: array
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: ユーザー情報全件取得
+      tags:
+        - users
+    post:
+      description: 新しいユーザーを作成する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.CreateUserRequest"
+        description: ユーザー情報
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.LoginUserResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: ユーザー新規作成
+      tags:
+        - users
+  "/api/v1/users/{id}":
+    get:
+      description: 指定したユーザーの詳細情報を取得する
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.UserResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: ユーザー詳細情報取得
+      tags:
+        - users
+  /api/v1/users/info/me:
+    get:
+      description: ログイン中のユーザー情報を取得する
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.MeResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: ログインユーザー情報取得
+      tags:
+        - users
+  /api/v1/users/pickup/today:
+    get:
+      description: ログインユーザーとは異なる性別のユーザーを20件返す
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/response.UserResponse"
+                type: array
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: 本日のピックアップユーザー取得
+      tags:
+        - users
+servers:
+  - url: //localhost:8080
+components:
+  schemas:
+    error_handler.ErrorResponse:
+      properties:
+        error:
+          type: string
+        error_detail:
+          items:
+            type: string
+          type: array
+        status:
+          type: integer
+      type: object
+    request.CreateUserRequest:
+      properties:
+        birthday:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        password:
+          minLength: 8
+          type: string
+        prefecture:
+          type: integer
+        sex:
+          type: string
+      required:
+        - birthday
+        - email
+        - name
+        - password
+        - prefecture
+        - sex
+      type: object
+    request.LoginRequest:
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+      type: object
+    request.SendLikeRequest:
+      properties:
+        receiver_id:
+          description: いいねを受け取るユーザー
+          type: string
+      required:
+        - receiver_id
+      type: object
+    request.SendMessageRequest:
+      properties:
+        message:
+          description: メッセージ
+          type: string
+        receiver_id:
+          description: メッセージを受け取るユーザー
+          type: string
+      required:
+        - message
+        - receiver_id
+      type: object
+    response.AuthenticationResponse:
+      properties:
+        api_token:
+          description: IDトークン
+          type: string
+      required:
+        - api_token
+      type: object
+    response.InitialResponse:
+      properties:
+        current_version:
+          description: current version
+          type: string
+        min_version:
+          description: min version
+          type: string
+      required:
+        - current_version
+        - min_version
+      type: object
+    response.LoginUserResponse:
+      properties:
+        authentication:
+          $ref: "#/components/schemas/response.AuthenticationResponse"
+        me:
+          $ref: "#/components/schemas/response.MeResponse"
+      required:
+        - authentication
+        - me
+      type: object
+    response.MeResponse:
+      properties:
+        avatar:
+          description: アバター
+          type: string
+        birthday:
+          description: 生年月日
+          type: string
+        email:
+          description: メールアドレス
+          type: string
+        id:
+          description: ID
+          type: string
+        like:
+          description: いいね数
+          type: integer
+        message:
+          description: メッセージ
+          type: string
+        name:
+          description: 名前
+          type: string
+        prefecture:
+          $ref: "#/components/schemas/response.PrefectureResponse"
+        sex:
+          description: 性別
+          type: string
+      required:
+        - birthday
+        - email
+        - id
+        - like
+        - name
+        - prefecture
+        - sex
+      type: object
+    response.PrefectureResponse:
+      properties:
+        code:
+          description: 都道府県コード
+          type: integer
+        name:
+          description: 都道府県名
+          type: string
+      required:
+        - code
+        - name
+      type: object
+    response.ReceiveMessageResponse:
+      properties:
+        message:
+          description: メッセージ
+          type: string
+        receive_at:
+          description: 受信日時
+          type: string
+        sender:
+          $ref: "#/components/schemas/response.UserResponse"
+      required:
+        - message
+        - receive_at
+        - sender
+      type: object
+    response.SendLikeResponse:
+      properties:
+        receiver:
+          $ref: "#/components/schemas/response.UserResponse"
+        sent_at:
+          description: 送信日時
+          type: string
+      required:
+        - receiver
+        - sent_at
+      type: object
+    response.UserResponse:
+      properties:
+        avatar:
+          description: アバター
+          type: string
+        birthday:
+          description: 生年月日
+          type: string
+        id:
+          description: ID
+          type: string
+        like:
+          description: いいね数
+          type: integer
+        message:
+          description: メッセージ
+          type: string
+        name:
+          description: 名前
+          type: string
+        prefecture:
+          $ref: "#/components/schemas/response.PrefectureResponse"
+        sex:
+          description: 性別
+          type: string
+      required:
+        - birthday
+        - id
+        - like
+        - name
+        - prefecture
+        - sex
+      type: object

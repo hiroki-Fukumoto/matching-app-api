@@ -5,3 +5,5 @@
 /docker/minio/config/*
 /docker/minio/data/*
 /docker/minio/export/.minio.sys/*
+/node_modules
+/package-lock.json

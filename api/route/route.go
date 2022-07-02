@@ -22,6 +22,7 @@ func SetupRouter() *gin.Engine {
 	route.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:3000",
+			"http://localhost:8081",
 		},
 		AllowMethods: []string{
 			"*",
@@ -91,7 +92,7 @@ func SetupRouter() *gin.Engine {
 
 		gSendLike.Use(middleware.CheckApiToken())
 		gSendLike.POST("", c.SendLike)
-		gSendLike.DELETE("/cancel", c.CancelLike)
+		gSendLike.DELETE(":receiverID/cancel", c.CancelLike)
 		gSendLike.GET("/send", c.FindSendLikes)
 		gSendLike.GET("/receive", c.FindReceiveLikes)
 	}

@@ -93,63 +93,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "nil"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/likes/cancel": {
-            "delete": {
-                "description": "いいねを取り消す",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "send like"
-                ],
-                "summary": "いいねを取り消す",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ログイン時に取得したIDトークン(Bearer)",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "いいねを取り消す情報",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.SendLikeRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "nil"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -260,6 +204,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/likes/{receiverID}/cancel": {
+            "delete": {
+                "description": "いいねを取り消す",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "send like"
+                ],
+                "summary": "いいねを取り消す",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "取り消しにするユーザーID",
+                        "name": "receiverID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/login": {
             "post": {
                 "description": "ログイン処理を行う。JWTを新たに発行する",
@@ -340,7 +332,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.MessageResponse"
+                                "$ref": "#/definitions/response.ReceiveMessageResponse"
                             }
                         }
                     },
@@ -390,10 +382,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "nil"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -441,10 +430,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "nil"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -937,28 +923,6 @@ const docTemplate = `{
                 }
             }
         },
-        "response.MessageResponse": {
-            "type": "object",
-            "required": [
-                "message",
-                "sender",
-                "sent_at"
-            ],
-            "properties": {
-                "message": {
-                    "description": "メッセージ",
-                    "type": "string"
-                },
-                "sender": {
-                    "description": "送り手",
-                    "$ref": "#/definitions/response.UserResponse"
-                },
-                "sent_at": {
-                    "description": "受信日時",
-                    "type": "string"
-                }
-            }
-        },
         "response.PrefectureResponse": {
             "type": "object",
             "required": [
@@ -973,6 +937,28 @@ const docTemplate = `{
                 "name": {
                     "description": "都道府県名",
                     "type": "string"
+                }
+            }
+        },
+        "response.ReceiveMessageResponse": {
+            "type": "object",
+            "required": [
+                "message",
+                "receive_at",
+                "sender"
+            ],
+            "properties": {
+                "message": {
+                    "description": "メッセージ",
+                    "type": "string"
+                },
+                "receive_at": {
+                    "description": "受信日時",
+                    "type": "string"
+                },
+                "sender": {
+                    "description": "送り手",
+                    "$ref": "#/definitions/response.UserResponse"
                 }
             }
         },
