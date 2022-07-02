@@ -25,4 +25,4 @@ exec-db:
 
 # http://localhost:8080/swagger/index.html
 generate-api-doc:
-	docker-compose -f ./docker-compose.yml exec api /bin/bash -c "swag init ./main.go"
+	docker-compose -f ./docker-compose.yml exec api /bin/bash -c "go get -u github.com/swaggo/swag/cmd/swag && swag init ./main.go"

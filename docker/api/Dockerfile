@@ -8,7 +8,8 @@ COPY ./api .
 
 RUN go get -u github.com/cosmtrek/air && \
   go build -o /go/bin/air github.com/cosmtrek/air && \
-  go get -u github.com/gin-gonic/gin
+  go get -u github.com/gin-gonic/gin && \
+  go get -u github.com/swaggo/gin-swagger
 
 COPY ./api/go.mod ./api/go.sum ./
 RUN go mod download
