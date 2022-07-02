@@ -304,6 +304,59 @@
                 }
             }
         },
+        "/api/v1/messages": {
+            "post": {
+                "description": "メッセージを送る",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "メッセージを送る",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "メッセージを送る情報",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.SendMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "nil"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "description": "50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）",
@@ -665,6 +718,23 @@
             "properties": {
                 "receiver_user_id": {
                     "description": "いいねを受け取るユーザー",
+                    "type": "string"
+                }
+            }
+        },
+        "request.SendMessageRequest": {
+            "type": "object",
+            "required": [
+                "message",
+                "receiver_user_id"
+            ],
+            "properties": {
+                "message": {
+                    "description": "メッセージ",
+                    "type": "string"
+                },
+                "receiver_user_id": {
+                    "description": "メッセージを受け取るユーザー",
                     "type": "string"
                 }
             }

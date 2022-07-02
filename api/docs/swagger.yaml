@@ -51,6 +51,18 @@ definitions:
     required:
     - receiver_user_id
     type: object
+  request.SendMessageRequest:
+    properties:
+      message:
+        description: メッセージ
+        type: string
+      receiver_user_id:
+        description: メッセージを受け取るユーザー
+        type: string
+    required:
+    - message
+    - receiver_user_id
+    type: object
   response.AuthenticationResponse:
     properties:
       api_token:
@@ -378,6 +390,41 @@ paths:
       summary: ログイン
       tags:
       - auth
+  /api/v1/messages:
+    post:
+      consumes:
+      - application/json
+      description: メッセージを送る
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: メッセージを送る情報
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.SendMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: nil
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: メッセージを送る
+      tags:
+      - messages
   /api/v1/users:
     get:
       consumes:

@@ -96,5 +96,16 @@ func SetupRouter() *gin.Engine {
 		gSendLike.GET("/receive", c.FindReceiveLikes)
 	}
 
+	gMessage := appApiV1.Group("messages")
+	{
+		db := config.Connect()
+		r := repository.NewMessageRepository(db)
+		s := service.NewMessageService(r)
+		c := controller.NewMessageController(s)
+
+		gMessage.Use(middleware.CheckApiToken())
+		gMessage.POST("", c.SendMessage)
+	}
+
 	return route
 }

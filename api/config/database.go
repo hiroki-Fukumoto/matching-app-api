@@ -35,6 +35,7 @@ func autoMigration() {
 		&model.User{},
 		&model.Device{},
 		&model.SendLike{},
+		&model.Message{},
 	)
 
 	// seeds.Seed(db)
