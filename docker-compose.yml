@@ -1,5 +1,22 @@
 version: '3'
 services: 
+  db:
+    image: mysql:8.0
+    platform: linux/amd64
+    restart: always
+    environment:
+      MYSQL_DATABASE: example_db
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: user123
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - matching-app-network
+
   api:
     build:
       context: .
@@ -25,23 +42,6 @@ services:
       - TZ=Asia/Tokyo
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-    networks:
-      - matching-app-network
-
-  db:
-    image: mysql:8.0
-    platform: linux/amd64
-    restart: always
-    environment:
-      MYSQL_DATABASE: example_db
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: user1
-      MYSQL_PASSWORD: user123
-    ports:
-      - 3306:3306
-    volumes:
-      - ./docker/db/data:/var/lib/mysql
-      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
       - matching-app-network
 
