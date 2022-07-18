@@ -14,8 +14,8 @@ func GetPrefectureCodeList() []uint16 {
 }
 
 type prefecture struct {
-	code uint16
-	name string
+	Code uint16
+	Name string
 }
 
 func GetPrefectureCodeAndNameList() []prefecture {

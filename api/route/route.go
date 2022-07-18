@@ -67,6 +67,14 @@ func SetupRouter() *gin.Engine {
 		gAuth.POST("login", c.Login)
 	}
 
+	gPrefecture := appApiV1.Group("prefectures")
+	{
+		s := service.NewPrefectureService()
+		c := controller.NewPrefectureController(s)
+
+		gPrefecture.GET("", c.FindAll)
+	}
+
 	gUser := appApiV1.Group("users")
 	{
 		db := config.Connect()

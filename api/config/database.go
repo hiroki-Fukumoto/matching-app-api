@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
+	"github.com/hiroki-Fukumoto/matching-app-api/api/seeds"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -18,7 +19,6 @@ var (
 )
 
 func Connect() *gorm.DB {
-	// var db *gorm.DB
 	err = dbConnect()
 	if err != nil {
 		log.Fatalln(err)
@@ -35,8 +35,6 @@ func dbConnect() error {
 	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":3306)/" + os.Getenv("DB_NAME") + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var count int = 10
-	// var db *gorm.DB
-	// var err error
 	for count > 1 {
 		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
@@ -60,5 +58,5 @@ func autoMigration() {
 		&model.Message{},
 	)
 
-	// seeds.Seed(db)
+	seeds.Seed(db)
 }

@@ -496,6 +496,31 @@ paths:
       summary: メッセージを既読にする
       tags:
       - messages
+  /api/v1/prefectures:
+    get:
+      consumes:
+      - application/json
+      description: 都道府県のコードと名前のリストを取得する
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.PrefectureResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: 都道府県リスト取得
+      tags:
+      - prefectures
   /api/v1/users:
     get:
       consumes:

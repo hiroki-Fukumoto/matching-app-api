@@ -5,12 +5,7 @@ import (
 	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
 )
 
-type PrefectureResponse struct {
-	Code int    `json:"code" validate:"required"` // 都道府県コード
-	Name string `json:"name" validate:"required"` // 都道府県名
-}
-
-func (p *PrefectureResponse) ToPrefectureResponse(u *model.User) PrefectureResponse {
+func (p *PrefectureResponse) toPrefectureResponse(u *model.User) PrefectureResponse {
 	code := int(u.Prefecture)
 	name, _ := util.GetPrefectureName(code)
 	p.Code = int(u.Prefecture)
@@ -40,7 +35,7 @@ func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
 	m.Message = u.Message
 	m.Avatar = u.Avatar
 	m.Like = int(u.Like)
-	m.Prefecture = m.Prefecture.ToPrefectureResponse(u)
+	m.Prefecture = m.Prefecture.toPrefectureResponse(u)
 
 	return *m
 }
@@ -80,7 +75,7 @@ func (ur *UserResponse) ToUserResponse(u *model.User) UserResponse {
 	ur.Message = u.Message
 	ur.Avatar = u.Avatar
 	ur.Like = int(u.Like)
-	ur.Prefecture = ur.Prefecture.ToPrefectureResponse(u)
+	ur.Prefecture = ur.Prefecture.toPrefectureResponse(u)
 
 	return *ur
 }
