@@ -470,12 +470,6 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {

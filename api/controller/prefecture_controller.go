@@ -27,7 +27,6 @@ func NewPrefectureController(ps service.PrefectureService) PrefectureController 
 // @Accept json
 // @Produce json
 // @Success 200 {object} []response.PrefectureResponse{}
-// @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/prefectures [get]
 func (pc prefectureController) FindAll(c *gin.Context) {
