@@ -574,6 +574,10 @@ components:
         prefecture:
           type: integer
         sex:
+          enum:
+            - male
+            - female
+            - other
           type: string
       required:
         - birthday
@@ -670,6 +674,10 @@ components:
           $ref: "#/components/schemas/response.PrefectureResponse"
         sex:
           description: 性別
+          enum:
+            - male
+            - female
+            - other
           type: string
       required:
         - birthday
@@ -742,6 +750,10 @@ components:
           $ref: "#/components/schemas/response.PrefectureResponse"
         sex:
           description: 性別
+          enum:
+            - male
+            - female
+            - other
           type: string
       required:
         - birthday

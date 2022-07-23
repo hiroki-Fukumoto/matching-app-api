@@ -26,9 +26,9 @@ func CreateDummyUser(db *gorm.DB) error {
 		if err := db.Where("name = ?", u.Name).First(&model.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			u.Email = fmt.Sprintf("dummy%s@test.com", strconv.Itoa(i))
 			if i%2 == 0 {
-				u.Sex = enum.SEX.MALE
+				u.Sex = string(enum.SEX.MALE)
 			} else {
-				u.Sex = enum.SEX.FEMALE
+				u.Sex = string(enum.SEX.FEMALE)
 			}
 			delta := bmax - bmin
 			sec := rand.Int63n(delta) + bmin

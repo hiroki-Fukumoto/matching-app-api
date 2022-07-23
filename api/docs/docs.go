@@ -813,7 +813,12 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "sex": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female",
+                        "other"
+                    ]
                 }
             }
         },
@@ -951,7 +956,12 @@ const docTemplate = `{
                 },
                 "sex": {
                     "description": "性別",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female",
+                        "other"
+                    ]
                 }
             }
         },
@@ -1052,7 +1062,12 @@ const docTemplate = `{
                 },
                 "sex": {
                     "description": "性別",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female",
+                        "other"
+                    ]
                 }
             }
         }

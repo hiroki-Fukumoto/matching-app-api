@@ -805,7 +805,12 @@
                     "type": "integer"
                 },
                 "sex": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female",
+                        "other"
+                    ]
                 }
             }
         },
@@ -943,7 +948,12 @@
                 },
                 "sex": {
                     "description": "性別",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female",
+                        "other"
+                    ]
                 }
             }
         },
@@ -1044,7 +1054,12 @@
                 },
                 "sex": {
                     "description": "性別",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female",
+                        "other"
+                    ]
                 }
             }
         }

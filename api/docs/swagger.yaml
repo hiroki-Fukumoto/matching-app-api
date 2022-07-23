@@ -24,6 +24,10 @@ definitions:
       prefecture:
         type: integer
       sex:
+        enum:
+        - male
+        - female
+        - other
         type: string
     required:
     - birthday
@@ -121,6 +125,10 @@ definitions:
         description: 都道府県
       sex:
         description: 性別
+        enum:
+        - male
+        - female
+        - other
         type: string
     required:
     - birthday
@@ -196,6 +204,10 @@ definitions:
         description: 都道府県
       sex:
         description: 性別
+        enum:
+        - male
+        - female
+        - other
         type: string
     required:
     - birthday

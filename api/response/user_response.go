@@ -1,6 +1,7 @@
 package response
 
 import (
+	"github.com/hiroki-Fukumoto/matching-app-api/api/enum"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/model"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
 )
@@ -15,22 +16,22 @@ func (p *PrefectureResponse) toPrefectureResponse(u *model.User) PrefectureRespo
 }
 
 type MeResponse struct {
-	ID         string             `json:"id" validate:"required"`         // ID
-	Name       string             `json:"name" validate:"required"`       // 名前
-	Email      string             `json:"email" validate:"required"`      // メールアドレス
-	Sex        string             `json:"sex" validate:"required"`        // 性別
-	Birthday   string             `json:"birthday" validate:"required"`   // 生年月日
-	Message    *string            `json:"message"`                        // メッセージ
-	Avatar     *string            `json:"avatar"`                         // アバター
-	Like       int                `json:"like" validate:"required"`       // いいね数
-	Prefecture PrefectureResponse `json:"prefecture" validate:"required"` // 都道府県
+	ID         string             `json:"id" validate:"required"`                            // ID
+	Name       string             `json:"name" validate:"required"`                          // 名前
+	Email      string             `json:"email" validate:"required"`                         // メールアドレス
+	Sex        enum.Sex           `json:"sex" validate:"required" enums:"male,female,other"` // 性別
+	Birthday   string             `json:"birthday" validate:"required"`                      // 生年月日
+	Message    *string            `json:"message"`                                           // メッセージ
+	Avatar     *string            `json:"avatar"`                                            // アバター
+	Like       int                `json:"like" validate:"required"`                          // いいね数
+	Prefecture PrefectureResponse `json:"prefecture" validate:"required"`                    // 都道府県
 }
 
 func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
 	m.ID = u.Base.ID
 	m.Name = u.Name
 	m.Email = u.Email
-	m.Sex = u.Sex
+	m.Sex = enum.Sex(u.Sex)
 	m.Birthday = util.FormatDate(u.Birthday)
 	m.Message = u.Message
 	m.Avatar = u.Avatar
@@ -57,20 +58,20 @@ func (l *LoginUserResponse) ToLoginUserResponse(u *model.User, apiToken string) 
 }
 
 type UserResponse struct {
-	ID         string             `json:"id" validate:"required"`         // ID
-	Name       string             `json:"name" validate:"required"`       // 名前
-	Sex        string             `json:"sex" validate:"required"`        // 性別
-	Birthday   string             `json:"birthday" validate:"required"`   // 生年月日
-	Message    *string            `json:"message"`                        // メッセージ
-	Avatar     *string            `json:"avatar"`                         // アバター
-	Like       int                `json:"like" validate:"required"`       // いいね数
-	Prefecture PrefectureResponse `json:"prefecture" validate:"required"` // 都道府県
+	ID         string             `json:"id" validate:"required"`                            // ID
+	Name       string             `json:"name" validate:"required"`                          // 名前
+	Sex        enum.Sex           `json:"sex" validate:"required" enums:"male,female,other"` // 性別
+	Birthday   string             `json:"birthday" validate:"required"`                      // 生年月日
+	Message    *string            `json:"message"`                                           // メッセージ
+	Avatar     *string            `json:"avatar"`                                            // アバター
+	Like       int                `json:"like" validate:"required"`                          // いいね数
+	Prefecture PrefectureResponse `json:"prefecture" validate:"required"`                    // 都道府県
 }
 
 func (ur *UserResponse) ToUserResponse(u *model.User) UserResponse {
 	ur.ID = u.Base.ID
 	ur.Name = u.Name
-	ur.Sex = u.Sex
+	ur.Sex = enum.Sex(u.Sex)
 	ur.Birthday = util.FormatDate(u.Birthday)
 	ur.Message = u.Message
 	ur.Avatar = u.Avatar

@@ -1,9 +1,11 @@
 package enum
 
+type Sex string
+
 var SEX = struct {
-	MALE   string
-	FEMALE string
-	OTHER  string
+	MALE   Sex
+	FEMALE Sex
+	OTHER  Sex
 }{
 	MALE:   "male",
 	FEMALE: "female",

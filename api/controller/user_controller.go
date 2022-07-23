@@ -110,10 +110,10 @@ func (uc userController) PickupToday(c *gin.Context) {
 	}
 
 	var targetSex string
-	if user.Sex == enum.SEX.MALE {
-		targetSex = enum.SEX.FEMALE
+	if enum.Sex(user.Sex) == enum.SEX.MALE {
+		targetSex = string(enum.SEX.FEMALE)
 	} else {
-		targetSex = enum.SEX.MALE
+		targetSex = string(enum.SEX.MALE)
 	}
 
 	res, err := uc.userService.PickupToday(targetSex)
