@@ -9,23 +9,23 @@ import (
 	"gorm.io/gorm"
 )
 
-type sendLikeRepository struct {
+type favoriteLikeRepository struct {
 	DB *gorm.DB
 }
 
-type SendLikeRepository interface {
+type FavoriteRepository interface {
 	SendLikeRequest() *SendLikeRequest
 	CancelLikeRequest() *CancelLikeRequest
 	SendLike(req *SendLikeRequest) error
 	CancelLike(req *CancelLikeRequest) error
 	FindSendLikesRequest() *FindSendLikesRequest
-	FindSendLikes(req *FindSendLikesRequest) (likes []*model.SendLike, err error)
+	FindSendLikes(req *FindSendLikesRequest) (likes []*model.Favorite, err error)
 	FindReceiveLikesRequest() *FindReceiveLikesRequest
-	FindReceiveLikes(req *FindReceiveLikesRequest) (likes []*model.SendLike, err error)
+	FindReceiveLikes(req *FindReceiveLikesRequest) (likes []*model.Favorite, err error)
 }
 
-func NewSendLikeRepository(db *gorm.DB) SendLikeRepository {
-	return &sendLikeRepository{DB: db}
+func NewFavoriteRepository(db *gorm.DB) FavoriteRepository {
+	return &favoriteLikeRepository{DB: db}
 }
 
 type SendLikeRequest struct {
@@ -33,14 +33,14 @@ type SendLikeRequest struct {
 	ReceiverID string
 }
 
-func (sr *sendLikeRepository) SendLikeRequest() *SendLikeRequest {
+func (sr *favoriteLikeRepository) SendLikeRequest() *SendLikeRequest {
 	return &SendLikeRequest{}
 }
 
-func (sr *sendLikeRepository) SendLike(req *SendLikeRequest) error {
+func (sr *favoriteLikeRepository) SendLike(req *SendLikeRequest) error {
 	db := sr.DB
 
-	sendLike := &model.SendLike{
+	sendLike := &model.Favorite{
 		SenderID:   req.SenderID,
 		ReceiverID: req.ReceiverID,
 	}
@@ -63,14 +63,14 @@ type CancelLikeRequest struct {
 	ReceiverID string
 }
 
-func (sr *sendLikeRepository) CancelLikeRequest() *CancelLikeRequest {
+func (sr *favoriteLikeRepository) CancelLikeRequest() *CancelLikeRequest {
 	return &CancelLikeRequest{}
 }
 
-func (sr *sendLikeRepository) CancelLike(req *CancelLikeRequest) error {
+func (sr *favoriteLikeRepository) CancelLike(req *CancelLikeRequest) error {
 	db := sr.DB
 
-	sendLike := *&model.SendLike{}
+	sendLike := *&model.Favorite{}
 
 	if err := db.Where("sender_id = ?", req.SenderID).Where("receiver_id = ?", req.ReceiverID).Delete(&sendLike).Error; err != nil {
 		return err
@@ -83,11 +83,11 @@ type FindSendLikesRequest struct {
 	SenderID string
 }
 
-func (sr *sendLikeRepository) FindSendLikesRequest() *FindSendLikesRequest {
+func (sr *favoriteLikeRepository) FindSendLikesRequest() *FindSendLikesRequest {
 	return &FindSendLikesRequest{}
 }
 
-func (sr *sendLikeRepository) FindSendLikes(req *FindSendLikesRequest) (likes []*model.SendLike, err error) {
+func (sr *favoriteLikeRepository) FindSendLikes(req *FindSendLikesRequest) (likes []*model.Favorite, err error) {
 	db := sr.DB
 	if err := db.Where("sender_id = ?", req.SenderID).
 		Preload("Receiver").
@@ -102,11 +102,11 @@ type FindReceiveLikesRequest struct {
 	ReceiverID string
 }
 
-func (sr *sendLikeRepository) FindReceiveLikesRequest() *FindReceiveLikesRequest {
+func (sr *favoriteLikeRepository) FindReceiveLikesRequest() *FindReceiveLikesRequest {
 	return &FindReceiveLikesRequest{}
 }
 
-func (sr *sendLikeRepository) FindReceiveLikes(req *FindReceiveLikesRequest) (likes []*model.SendLike, err error) {
+func (sr *favoriteLikeRepository) FindReceiveLikes(req *FindReceiveLikesRequest) (likes []*model.Favorite, err error) {
 	db := sr.DB
 	if err := db.Where("receiver_id = ?", req.ReceiverID).
 		Preload("Sender").

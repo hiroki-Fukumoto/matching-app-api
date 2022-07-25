@@ -1,6 +1,6 @@
 package model
 
-type SendLike struct {
+type Favorite struct {
 	Base
 	SenderID   string `gorm:"size:36;index;not null"`
 	ReceiverID string `gorm:"size:36;index;not null"`

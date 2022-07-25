@@ -54,7 +54,7 @@ func autoMigration() {
 	db.AutoMigrate(
 		&model.User{},
 		&model.Device{},
-		&model.SendLike{},
+		&model.Favorite{},
 		&model.Message{},
 	)
 

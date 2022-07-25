@@ -10,7 +10,7 @@ type SendLikeResponse struct {
 	Receiver UserResponse `json:"receiver" validate:"required"` // 受け取り手
 }
 
-func (s *SendLikeResponse) ToSendLikeResponse(l *model.SendLike) SendLikeResponse {
+func (s *SendLikeResponse) ToSendLikeResponse(l *model.Favorite) SendLikeResponse {
 	s.SentAt = util.FormatDateTime(*l.CreatedAt)
 	s.Receiver = s.Receiver.ToUserResponse(&l.Receiver)
 
@@ -22,7 +22,7 @@ type ReceiveLikeResponse struct {
 	Sender     UserResponse `json:"sender" validate:"required"`      // 送り手
 }
 
-func (s *ReceiveLikeResponse) ToReceiveLikeResponse(l *model.SendLike) ReceiveLikeResponse {
+func (s *ReceiveLikeResponse) ToReceiveLikeResponse(l *model.Favorite) ReceiveLikeResponse {
 	s.ReceivedAt = util.FormatDateTime(*l.CreatedAt)
 	s.Sender = s.Sender.ToUserResponse(&l.Sender)
 

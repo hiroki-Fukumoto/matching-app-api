@@ -5,49 +5,49 @@ import (
 	"github.com/hiroki-Fukumoto/matching-app-api/api/response"
 )
 
-type SendLikeService interface {
+type FavoriteService interface {
 	SendLike(senderID string, receiverID string) error
 	CancelLike(senderID string, receiverID string) error
 	FindSendLikes(senderID string) (res []*response.SendLikeResponse, err error)
 	FindReceiveLikes(receiverID string) (res []*response.ReceiveLikeResponse, err error)
 }
 
-type sendLikeService struct {
-	sendLikeRepository repository.SendLikeRepository
+type favoriteService struct {
+	favoriteRepository repository.FavoriteRepository
 }
 
-func NewSendLikeService(sr repository.SendLikeRepository) SendLikeService {
-	return &sendLikeService{
-		sendLikeRepository: sr,
+func NewFavoriteService(sr repository.FavoriteRepository) FavoriteService {
+	return &favoriteService{
+		favoriteRepository: sr,
 	}
 }
 
-func (ss sendLikeService) SendLike(senderID string, receiverID string) error {
-	req := ss.sendLikeRepository.SendLikeRequest()
+func (ss favoriteService) SendLike(senderID string, receiverID string) error {
+	req := ss.favoriteRepository.SendLikeRequest()
 	req.SenderID = senderID
 	req.ReceiverID = receiverID
-	err := ss.sendLikeRepository.SendLike(req)
+	err := ss.favoriteRepository.SendLike(req)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (ss sendLikeService) CancelLike(senderID string, receiverID string) error {
-	req := ss.sendLikeRepository.CancelLikeRequest()
+func (ss favoriteService) CancelLike(senderID string, receiverID string) error {
+	req := ss.favoriteRepository.CancelLikeRequest()
 	req.SenderID = senderID
 	req.ReceiverID = receiverID
-	err := ss.sendLikeRepository.CancelLike(req)
+	err := ss.favoriteRepository.CancelLike(req)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (ss sendLikeService) FindSendLikes(senderID string) (res []*response.SendLikeResponse, err error) {
-	req := ss.sendLikeRepository.FindSendLikesRequest()
+func (ss favoriteService) FindSendLikes(senderID string) (res []*response.SendLikeResponse, err error) {
+	req := ss.favoriteRepository.FindSendLikesRequest()
 	req.SenderID = senderID
-	likes, err := ss.sendLikeRepository.FindSendLikes(req)
+	likes, err := ss.favoriteRepository.FindSendLikes(req)
 	if err != nil {
 		return nil, err
 	}
@@ -61,10 +61,10 @@ func (ss sendLikeService) FindSendLikes(senderID string) (res []*response.SendLi
 	return res, nil
 }
 
-func (ss sendLikeService) FindReceiveLikes(receiverID string) (res []*response.ReceiveLikeResponse, err error) {
-	req := ss.sendLikeRepository.FindReceiveLikesRequest()
+func (ss favoriteService) FindReceiveLikes(receiverID string) (res []*response.ReceiveLikeResponse, err error) {
+	req := ss.favoriteRepository.FindReceiveLikesRequest()
 	req.ReceiverID = receiverID
-	likes, err := ss.sendLikeRepository.FindReceiveLikes(req)
+	likes, err := ss.favoriteRepository.FindReceiveLikes(req)
 	if err != nil {
 		return nil, err
 	}

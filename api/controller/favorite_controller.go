@@ -12,20 +12,20 @@ import (
 	"github.com/hiroki-Fukumoto/matching-app-api/api/validator"
 )
 
-type SendLikeController interface {
+type FavoriteController interface {
 	SendLike(c *gin.Context)
 	CancelLike(c *gin.Context)
 	FindSendLikes(c *gin.Context)
 	FindReceiveLikes(c *gin.Context)
 }
 
-type sendLikeController struct {
-	sendLikeService service.SendLikeService
+type favoriteController struct {
+	favoriteService service.FavoriteService
 }
 
-func NewSendLikeController(us service.SendLikeService) SendLikeController {
-	return &sendLikeController{
-		sendLikeService: us,
+func NewFavoriteController(us service.FavoriteService) FavoriteController {
+	return &favoriteController{
+		favoriteService: us,
 	}
 }
 
@@ -40,7 +40,7 @@ func NewSendLikeController(us service.SendLikeService) SendLikeController {
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes [post]
-func (sc sendLikeController) SendLike(c *gin.Context) {
+func (sc favoriteController) SendLike(c *gin.Context) {
 	var req request.SendLikeRequest
 	c.BindJSON(&req)
 	if err := validator.Validate(&req); err != nil {
@@ -65,7 +65,7 @@ func (sc sendLikeController) SendLike(c *gin.Context) {
 		return
 	}
 
-	err = sc.sendLikeService.SendLike(user.Base.ID, req.ReceiverID)
+	err = sc.favoriteService.SendLike(user.Base.ID, req.ReceiverID)
 	if err != nil {
 		if err.Error() == error_handler.ErrBadRequest.Error() {
 			apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{"既にいいねを送っているユーザーです"}))
@@ -92,7 +92,7 @@ func (sc sendLikeController) SendLike(c *gin.Context) {
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes/{receiverID}/cancel [delete]
-func (sc sendLikeController) CancelLike(c *gin.Context) {
+func (sc favoriteController) CancelLike(c *gin.Context) {
 	receiverID := c.Param("receiverID")
 	if receiverID == "" {
 		apiError := error_handler.ApiErrorHandle("", error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{"IDが指定されていません"}))
@@ -107,7 +107,7 @@ func (sc sendLikeController) CancelLike(c *gin.Context) {
 		return
 	}
 
-	err = sc.sendLikeService.CancelLike(user.Base.ID, receiverID)
+	err = sc.favoriteService.CancelLike(user.Base.ID, receiverID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
@@ -127,7 +127,7 @@ func (sc sendLikeController) CancelLike(c *gin.Context) {
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes/send [get]
-func (sc sendLikeController) FindSendLikes(c *gin.Context) {
+func (sc favoriteController) FindSendLikes(c *gin.Context) {
 	user, err := util.GetLoginUser(c)
 
 	if err != nil {
@@ -136,7 +136,7 @@ func (sc sendLikeController) FindSendLikes(c *gin.Context) {
 		return
 	}
 
-	res, err := sc.sendLikeService.FindSendLikes(user.Base.ID)
+	res, err := sc.favoriteService.FindSendLikes(user.Base.ID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
@@ -156,7 +156,7 @@ func (sc sendLikeController) FindSendLikes(c *gin.Context) {
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes/receive [get]
-func (sc sendLikeController) FindReceiveLikes(c *gin.Context) {
+func (sc favoriteController) FindReceiveLikes(c *gin.Context) {
 	user, err := util.GetLoginUser(c)
 
 	if err != nil {
@@ -165,7 +165,7 @@ func (sc sendLikeController) FindReceiveLikes(c *gin.Context) {
 		return
 	}
 
-	res, err := sc.sendLikeService.FindReceiveLikes(user.Base.ID)
+	res, err := sc.favoriteService.FindReceiveLikes(user.Base.ID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
