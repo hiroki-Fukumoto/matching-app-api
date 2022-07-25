@@ -54,6 +54,7 @@ func (ur *userRepository) Create(req *CreateRequest) (user *model.User, err erro
 		Birthday:   req.Birthday,
 		Prefecture: req.Prefecture,
 		Password:   req.Password,
+		Avatar:     "https://placehold.jp/300x300.png",
 	}
 
 	if err := db.Create(&user).Error; err != nil {

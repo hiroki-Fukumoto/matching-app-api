@@ -42,7 +42,7 @@ func CreateDummyUser(db *gorm.DB) error {
 			lmax := 500
 			u.Like = uint16(rand.Intn(lmax-lmin+1) + lmin)
 			var ava string = "https://placehold.jp/300x300.png"
-			u.Avatar = &ava
+			u.Avatar = ava
 			var m string = "初めまして。よろしくお願いします。"
 			u.Message = &m
 			passwordHash, _ := bcrypt.GenerateFromPassword([]byte("12345678"), 14)
