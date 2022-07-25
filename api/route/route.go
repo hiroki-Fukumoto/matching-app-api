@@ -79,7 +79,8 @@ func SetupRouter() *gin.Engine {
 	{
 		db := config.Connect()
 		r := repository.NewUserRepository(db)
-		s := service.NewUserService(r)
+		fr := repository.NewFavoriteRepository(db)
+		s := service.NewUserService(r, fr)
 		c := controller.NewUserController(s)
 
 		gUser.POST("", c.Create)
@@ -94,9 +95,9 @@ func SetupRouter() *gin.Engine {
 	gSendLike := appApiV1.Group("likes")
 	{
 		db := config.Connect()
-		r := repository.NewSendLikeRepository(db)
-		s := service.NewSendLikeService(r)
-		c := controller.NewSendLikeController(s)
+		r := repository.NewFavoriteRepository(db)
+		s := service.NewFavoriteService(r)
+		c := controller.NewFavoriteController(s)
 
 		gSendLike.Use(middleware.CheckApiToken())
 		gSendLike.POST("", c.SendLike)

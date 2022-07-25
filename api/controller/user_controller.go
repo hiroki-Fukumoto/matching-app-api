@@ -197,7 +197,15 @@ func (uc userController) FindAll(c *gin.Context) {
 		}
 	}
 
-	res, err := uc.userService.FindAll(&req)
+	user, err := util.GetLoginUser(c)
+
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	res, err := uc.userService.FindAll(&req, user.ID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)
@@ -227,7 +235,15 @@ func (uc userController) FindByID(c *gin.Context) {
 		return
 	}
 
-	res, err := uc.userService.FindByID(id)
+	user, err := util.GetLoginUser(c)
+
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	res, err := uc.userService.FindByID(id, user.ID)
 	if err != nil {
 		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
 		c.JSON(apiError.Status, apiError)

@@ -12,19 +12,22 @@ import (
 type UserService interface {
 	Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error)
 	PickupToday(targetSex string) (res []*response.UserResponse, err error)
-	FindAll(req *request.SearchUserRequest) (res []*response.UserResponse, err error)
-	FindByID(id string) (res *response.UserResponse, err error)
+	FindAll(req *request.SearchUserRequest, loginUserID string) (res []*response.UserResponse, err error)
+	FindByID(id string, loginUserID string) (res *response.UserResponse, err error)
 }
 
 type userService struct {
-	userRepository repository.UserRepository
+	userRepository     repository.UserRepository
+	favoriteRepository repository.FavoriteRepository
 }
 
 func NewUserService(
 	ur repository.UserRepository,
+	fr repository.FavoriteRepository,
 ) UserService {
 	return &userService{
-		userRepository: ur,
+		userRepository:     ur,
+		favoriteRepository: fr,
 	}
 }
 
@@ -73,7 +76,7 @@ func (us userService) PickupToday(targetSex string) (res []*response.UserRespons
 	return res, nil
 }
 
-func (us userService) FindAll(req *request.SearchUserRequest) (res []*response.UserResponse, err error) {
+func (us userService) FindAll(req *request.SearchUserRequest, loginUserID string) (res []*response.UserResponse, err error) {
 	r := us.userRepository.FindAllRequest()
 	r.Page = req.Page
 	r.FromAge = req.FromAge
@@ -85,16 +88,29 @@ func (us userService) FindAll(req *request.SearchUserRequest) (res []*response.U
 		return nil, err
 	}
 
+	sreq := us.favoriteRepository.FindSendLikesRequest()
+	sreq.SenderID = loginUserID
+	sendLikes, err := us.favoriteRepository.FindSendLikes(sreq)
+	if err != nil {
+		return nil, err
+	}
+
 	res = []*response.UserResponse{}
 	for _, u := range users {
 		r := &response.UserResponse{}
 		r.ToUserResponse(u)
+		for _, s := range sendLikes {
+			if s.ReceiverID == u.ID {
+				r.IsLiked = true
+				break
+			}
+		}
 		res = append(res, r)
 	}
 	return res, nil
 }
 
-func (us userService) FindByID(id string) (res *response.UserResponse, err error) {
+func (us userService) FindByID(id string, loginUserID string) (res *response.UserResponse, err error) {
 	r := us.userRepository.FindByIDRequest()
 	r.ID = id
 	user, err := us.userRepository.FindByID(r)
@@ -104,6 +120,10 @@ func (us userService) FindByID(id string) (res *response.UserResponse, err error
 
 	res = &response.UserResponse{}
 	res.ToUserResponse(user)
+
+	if id == loginUserID {
+		res.IsMySelf = true
+	}
 
 	return res, nil
 }

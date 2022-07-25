@@ -66,6 +66,8 @@ type UserResponse struct {
 	Avatar     string             `json:"avatar" validate:"required"`                        // アバター
 	Like       int                `json:"like" validate:"required"`                          // いいね数
 	Prefecture PrefectureResponse `json:"prefecture" validate:"required"`                    // 都道府県
+	IsMySelf   bool               `json:"is_my_self" validate:"required"`                    // 自分自身か
+	IsLiked    bool               `json:"is_liked" validate:"required"`                      // いいね済みか
 }
 
 func (ur *UserResponse) ToUserResponse(u *model.User) UserResponse {
