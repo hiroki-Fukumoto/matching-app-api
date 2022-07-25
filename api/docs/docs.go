@@ -1028,6 +1028,8 @@ const docTemplate = `{
                 "avatar",
                 "birthday",
                 "id",
+                "is_liked",
+                "is_my_self",
                 "like",
                 "name",
                 "prefecture",
@@ -1045,6 +1047,14 @@ const docTemplate = `{
                 "id": {
                     "description": "ID",
                     "type": "string"
+                },
+                "is_liked": {
+                    "description": "いいね済みか",
+                    "type": "boolean"
+                },
+                "is_my_self": {
+                    "description": "自分自身か",
+                    "type": "boolean"
                 },
                 "like": {
                     "description": "いいね数",
