@@ -118,8 +118,22 @@ func (us userService) FindByID(id string, loginUserID string) (res *response.Use
 		return nil, err
 	}
 
+	sreq := us.favoriteRepository.FindSendLikesRequest()
+	sreq.SenderID = loginUserID
+	sendLikes, err := us.favoriteRepository.FindSendLikes(sreq)
+	if err != nil {
+		return nil, err
+	}
+
 	res = &response.UserResponse{}
 	res.ToUserResponse(user)
+
+	for _, s := range sendLikes {
+		if s.ReceiverID == user.ID {
+			res.IsLiked = true
+			break
+		}
+	}
 
 	if id == loginUserID {
 		res.IsMySelf = true
