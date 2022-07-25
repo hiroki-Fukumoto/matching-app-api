@@ -23,7 +23,7 @@ func NewPrefectureController(ps service.PrefectureService) PrefectureController 
 
 // @Summary 都道府県リスト取得
 // @Description 都道府県のコードと名前のリストを取得する
-// @Tags prefectures
+// @Tags prefecture
 // @Accept json
 // @Produce json
 // @Success 200 {object} []response.PrefectureResponse{}

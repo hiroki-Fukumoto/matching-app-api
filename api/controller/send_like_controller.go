@@ -31,7 +31,7 @@ func NewSendLikeController(us service.SendLikeService) SendLikeController {
 
 // @Summary いいねを送る
 // @Description いいねを送る
-// @Tags send like
+// @Tags like
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -83,7 +83,7 @@ func (sc sendLikeController) SendLike(c *gin.Context) {
 
 // @Summary いいねを取り消す
 // @Description いいねを取り消す
-// @Tags send like
+// @Tags like
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -119,7 +119,7 @@ func (sc sendLikeController) CancelLike(c *gin.Context) {
 
 // @Summary 送信したいいね一覧を取得する
 // @Description 登録日が新しいもの順で返す
-// @Tags send like
+// @Tags like
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -148,7 +148,7 @@ func (sc sendLikeController) FindSendLikes(c *gin.Context) {
 
 // @Summary 受信したいいね一覧を取得する
 // @Description 登録日が新しいもの順で返す
-// @Tags send like
+// @Tags like
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"

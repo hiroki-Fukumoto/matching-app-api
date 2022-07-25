@@ -237,7 +237,7 @@ paths:
             type: string
       summary: health check
       tags:
-      - health check
+      - healthCheck
   /api/v1/initial:
     get:
       consumes:
@@ -284,7 +284,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: いいねを送る
       tags:
-      - send like
+      - like
   /api/v1/likes/{receiverID}/cancel:
     delete:
       consumes:
@@ -316,7 +316,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: いいねを取り消す
       tags:
-      - send like
+      - like
   /api/v1/likes/receive:
     get:
       consumes:
@@ -347,7 +347,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: 受信したいいね一覧を取得する
       tags:
-      - send like
+      - like
   /api/v1/likes/send:
     get:
       consumes:
@@ -378,7 +378,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: 送信したいいね一覧を取得する
       tags:
-      - send like
+      - like
   /api/v1/login:
     post:
       consumes:
@@ -443,7 +443,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: 受信済みメッセージを取得
       tags:
-      - messages
+      - message
     post:
       consumes:
       - application/json
@@ -475,7 +475,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: メッセージを送る
       tags:
-      - messages
+      - message
   /api/v1/messages/{id}/read:
     put:
       consumes:
@@ -507,7 +507,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: メッセージを既読にする
       tags:
-      - messages
+      - message
   /api/v1/prefectures:
     get:
       consumes:
@@ -528,7 +528,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: 都道府県リスト取得
       tags:
-      - prefectures
+      - prefecture
   /api/v1/users:
     get:
       consumes:
@@ -583,7 +583,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: ユーザー情報全件取得
       tags:
-      - users
+      - user
     post:
       consumes:
       - application/json
@@ -612,7 +612,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: ユーザー新規作成
       tags:
-      - users
+      - user
   /api/v1/users/{id}:
     get:
       consumes:
@@ -650,7 +650,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: ユーザー詳細情報取得
       tags:
-      - users
+      - user
   /api/v1/users/info/me:
     get:
       consumes:
@@ -683,7 +683,7 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: ログインユーザー情報取得
       tags:
-      - users
+      - user
   /api/v1/users/pickup/today:
     get:
       consumes:
@@ -718,5 +718,5 @@ paths:
             $ref: '#/definitions/error_handler.ErrorResponse'
       summary: 本日のピックアップユーザー取得
       tags:
-      - users
+      - user
 swagger: "2.0"

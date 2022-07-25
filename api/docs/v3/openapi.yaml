@@ -16,7 +16,7 @@ paths:
                 type: string
       summary: health check
       tags:
-        - health check
+        - healthCheck
   /api/v1/initial:
     get:
       responses:
@@ -63,7 +63,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: いいねを送る
       tags:
-        - send like
+        - like
   "/api/v1/likes/{receiverID}/cancel":
     delete:
       description: いいねを取り消す
@@ -97,7 +97,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: いいねを取り消す
       tags:
-        - send like
+        - like
   /api/v1/likes/receive:
     get:
       description: 登録日が新しいもの順で返す
@@ -131,7 +131,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: 受信したいいね一覧を取得する
       tags:
-        - send like
+        - like
   /api/v1/likes/send:
     get:
       description: 登録日が新しいもの順で返す
@@ -165,7 +165,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: 送信したいいね一覧を取得する
       tags:
-        - send like
+        - like
   /api/v1/login:
     post:
       description: ログイン処理を行う。JWTを新たに発行する
@@ -237,7 +237,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: 受信済みメッセージを取得
       tags:
-        - messages
+        - message
     post:
       description: メッセージを送る
       parameters:
@@ -271,7 +271,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: メッセージを送る
       tags:
-        - messages
+        - message
   "/api/v1/messages/{id}/read":
     put:
       description: メッセージを既読にする
@@ -305,7 +305,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: メッセージを既読にする
       tags:
-        - messages
+        - message
   /api/v1/prefectures:
     get:
       description: 都道府県のコードと名前のリストを取得する
@@ -326,7 +326,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: 都道府県リスト取得
       tags:
-        - prefectures
+        - prefecture
   /api/v1/users:
     get:
       description: 50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）
@@ -391,7 +391,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: ユーザー情報全件取得
       tags:
-        - users
+        - user
     post:
       description: 新しいユーザーを作成する
       requestBody:
@@ -422,7 +422,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: ユーザー新規作成
       tags:
-        - users
+        - user
   "/api/v1/users/{id}":
     get:
       description: 指定したユーザーの詳細情報を取得する
@@ -466,7 +466,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: ユーザー詳細情報取得
       tags:
-        - users
+        - user
   /api/v1/users/info/me:
     get:
       description: ログイン中のユーザー情報を取得する
@@ -504,7 +504,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: ログインユーザー情報取得
       tags:
-        - users
+        - user
   /api/v1/users/pickup/today:
     get:
       description: ログインユーザーとは異なる性別のユーザーを20件返す
@@ -544,7 +544,7 @@ paths:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
       summary: 本日のピックアップユーザー取得
       tags:
-        - users
+        - user
 servers:
   - url: //localhost:8080
 components:

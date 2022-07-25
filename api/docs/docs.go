@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "health check"
+                    "healthCheck"
                 ],
                 "summary": "health check",
                 "responses": {
@@ -70,7 +70,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "send like"
+                    "like"
                 ],
                 "summary": "いいねを送る",
                 "parameters": [
@@ -120,7 +120,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "send like"
+                    "like"
                 ],
                 "summary": "受信したいいね一覧を取得する",
                 "parameters": [
@@ -167,7 +167,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "send like"
+                    "like"
                 ],
                 "summary": "送信したいいね一覧を取得する",
                 "parameters": [
@@ -214,7 +214,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "send like"
+                    "like"
                 ],
                 "summary": "いいねを取り消す",
                 "parameters": [
@@ -314,7 +314,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "messages"
+                    "message"
                 ],
                 "summary": "受信済みメッセージを取得",
                 "parameters": [
@@ -359,7 +359,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "messages"
+                    "message"
                 ],
                 "summary": "メッセージを送る",
                 "parameters": [
@@ -409,7 +409,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "messages"
+                    "message"
                 ],
                 "summary": "メッセージを既読にする",
                 "parameters": [
@@ -457,7 +457,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "prefectures"
+                    "prefecture"
                 ],
                 "summary": "都道府県リスト取得",
                 "responses": {
@@ -489,7 +489,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "ユーザー情報全件取得",
                 "parameters": [
@@ -570,7 +570,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "ユーザー新規作成",
                 "parameters": [
@@ -616,7 +616,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "ログインユーザー情報取得",
                 "parameters": [
@@ -666,7 +666,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "本日のピックアップユーザー取得",
                 "parameters": [
@@ -719,7 +719,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "ユーザー詳細情報取得",
                 "parameters": [

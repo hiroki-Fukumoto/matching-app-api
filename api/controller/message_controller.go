@@ -30,7 +30,7 @@ func NewMessageController(us service.MessageService) MessageController {
 
 // @Summary 受信済みメッセージを取得
 // @Description 送信者別の受信メッセージ(最新の1通のみ)を受信日が最新のもの順に返す。
-// @Tags messages
+// @Tags message
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -59,7 +59,7 @@ func (mc messageController) FindReceiveMessages(c *gin.Context) {
 
 // @Summary メッセージを送る
 // @Description メッセージを送る
-// @Tags messages
+// @Tags message
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -105,7 +105,7 @@ func (mc messageController) SendMessage(c *gin.Context) {
 
 // @Summary メッセージを既読にする
 // @Description メッセージを既読にする
-// @Tags messages
+// @Tags message
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"

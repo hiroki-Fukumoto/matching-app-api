@@ -17,7 +17,7 @@ func NewHealthCheckController() HealthCheckController {
 }
 
 // @Summary health check
-// @Tags health check
+// @Tags healthCheck
 // @Accept json
 // @Produce json
 // @Success 200 {string} Health Check OK

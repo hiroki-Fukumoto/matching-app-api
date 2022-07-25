@@ -34,7 +34,7 @@ func NewUserController(us service.UserService) UserController {
 
 // @Summary ユーザー新規作成
 // @Description 新しいユーザーを作成する
-// @Tags users
+// @Tags user
 // @Accept json
 // @Produce json
 // @Param request body request.CreateUserRequest true "ユーザー情報"
@@ -65,7 +65,7 @@ func (uc userController) Create(c *gin.Context) {
 
 // @Summary ログインユーザー情報取得
 // @Description ログイン中のユーザー情報を取得する
-// @Tags users
+// @Tags user
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -91,7 +91,7 @@ func (uc userController) Me(c *gin.Context) {
 
 // @Summary 本日のピックアップユーザー取得
 // @Description ログインユーザーとは異なる性別のユーザーを20件返す
-// @Tags users
+// @Tags user
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -128,7 +128,7 @@ func (uc userController) PickupToday(c *gin.Context) {
 
 // @Summary ユーザー情報全件取得
 // @Description 50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）
-// @Tags users
+// @Tags user
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
@@ -209,7 +209,7 @@ func (uc userController) FindAll(c *gin.Context) {
 
 // @Summary ユーザー詳細情報取得
 // @Description 指定したユーザーの詳細情報を取得する
-// @Tags users
+// @Tags user
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
