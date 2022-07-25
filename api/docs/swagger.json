@@ -905,6 +905,7 @@
         "response.MeResponse": {
             "type": "object",
             "required": [
+                "avatar",
                 "birthday",
                 "email",
                 "id",
@@ -1016,6 +1017,7 @@
         "response.UserResponse": {
             "type": "object",
             "required": [
+                "avatar",
                 "birthday",
                 "id",
                 "like",

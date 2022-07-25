@@ -913,6 +913,7 @@ const docTemplate = `{
         "response.MeResponse": {
             "type": "object",
             "required": [
+                "avatar",
                 "birthday",
                 "email",
                 "id",
@@ -1024,6 +1025,7 @@ const docTemplate = `{
         "response.UserResponse": {
             "type": "object",
             "required": [
+                "avatar",
                 "birthday",
                 "id",
                 "like",

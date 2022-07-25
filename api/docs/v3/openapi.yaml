@@ -680,6 +680,7 @@ components:
             - other
           type: string
       required:
+        - avatar
         - birthday
         - email
         - id
@@ -756,6 +757,7 @@ components:
             - other
           type: string
       required:
+        - avatar
         - birthday
         - id
         - like

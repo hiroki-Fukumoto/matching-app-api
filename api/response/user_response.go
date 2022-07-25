@@ -22,7 +22,7 @@ type MeResponse struct {
 	Sex        enum.Sex           `json:"sex" validate:"required" enums:"male,female,other"` // 性別
 	Birthday   string             `json:"birthday" validate:"required"`                      // 生年月日
 	Message    *string            `json:"message"`                                           // メッセージ
-	Avatar     string             `json:"avatar"`                                            // アバター
+	Avatar     string             `json:"avatar" validate:"required"`                        // アバター
 	Like       int                `json:"like" validate:"required"`                          // いいね数
 	Prefecture PrefectureResponse `json:"prefecture" validate:"required"`                    // 都道府県
 }
@@ -63,7 +63,7 @@ type UserResponse struct {
 	Sex        enum.Sex           `json:"sex" validate:"required" enums:"male,female,other"` // 性別
 	Birthday   string             `json:"birthday" validate:"required"`                      // 生年月日
 	Message    *string            `json:"message"`                                           // メッセージ
-	Avatar     string             `json:"avatar"`                                            // アバター
+	Avatar     string             `json:"avatar" validate:"required"`                        // アバター
 	Like       int                `json:"like" validate:"required"`                          // いいね数
 	Prefecture PrefectureResponse `json:"prefecture" validate:"required"`                    // 都道府県
 }

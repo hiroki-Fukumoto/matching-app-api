@@ -131,6 +131,7 @@ definitions:
         - other
         type: string
     required:
+    - avatar
     - birthday
     - email
     - id
@@ -210,6 +211,7 @@ definitions:
         - other
         type: string
     required:
+    - avatar
     - birthday
     - id
     - like
