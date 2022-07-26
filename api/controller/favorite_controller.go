@@ -152,7 +152,7 @@ func (sc favoriteController) FindSendLikes(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
-// @Success 200 {object} []response.SendLikeResponse
+// @Success 200 {object} []response.ReceiveLikeResponse
 // @Failure 400 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes/receive [get]

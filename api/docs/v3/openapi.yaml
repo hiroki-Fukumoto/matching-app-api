@@ -115,7 +115,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: "#/components/schemas/response.SendLikeResponse"
+                  $ref: "#/components/schemas/response.ReceiveLikeResponse"
                 type: array
         "400":
           description: Bad Request
@@ -700,6 +700,17 @@ components:
       required:
         - code
         - name
+      type: object
+    response.ReceiveLikeResponse:
+      properties:
+        received_at:
+          description: 受信日時
+          type: string
+        sender:
+          $ref: "#/components/schemas/response.UserResponse"
+      required:
+        - received_at
+        - sender
       type: object
     response.ReceiveMessageResponse:
       properties:

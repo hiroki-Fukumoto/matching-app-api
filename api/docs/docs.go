@@ -138,7 +138,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.SendLikeResponse"
+                                "$ref": "#/definitions/response.ReceiveLikeResponse"
                             }
                         }
                     },
@@ -980,6 +980,23 @@ const docTemplate = `{
                 "name": {
                     "description": "都道府県名",
                     "type": "string"
+                }
+            }
+        },
+        "response.ReceiveLikeResponse": {
+            "type": "object",
+            "required": [
+                "received_at",
+                "sender"
+            ],
+            "properties": {
+                "received_at": {
+                    "description": "受信日時",
+                    "type": "string"
+                },
+                "sender": {
+                    "description": "送り手",
+                    "$ref": "#/definitions/response.UserResponse"
                 }
             }
         },
