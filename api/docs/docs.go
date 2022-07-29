@@ -480,87 +480,6 @@ const docTemplate = `{
             }
         },
         "/api/v1/users": {
-            "get": {
-                "description": "50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "ユーザー情報全件取得",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ログイン時に取得したIDトークン(Bearer)",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "ページ",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "都道府県",
-                        "name": "prefecture",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "年齢 From",
-                        "name": "from_age",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "年齢 To",
-                        "name": "to_age",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "並び順",
-                        "name": "sort",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/response.UserResponse"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/error_handler.ErrorResponse"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "新しいユーザーを作成する",
                 "consumes": [
@@ -593,6 +512,68 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/all": {
+            "post": {
+                "description": "50件ずつ取得。検索条件がない場合は登録日が新しい順に返す（今の所）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ユーザー情報全件取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "ユーザー情報",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.SearchUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.UserResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
@@ -834,6 +815,30 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "request.SearchUserRequest": {
+            "type": "object",
+            "properties": {
+                "from_age": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "prefectures": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "sort": {
+                    "description": "TODO: 並び順の種類",
+                    "type": "integer"
+                },
+                "to_age": {
+                    "type": "integer"
                 }
             }
         },
