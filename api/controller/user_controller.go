@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/enum"
@@ -132,69 +131,22 @@ func (uc userController) PickupToday(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
-// @Param page query int false "ページ"
-// @Param prefecture query int false "都道府県"
-// @Param from_age query int false "年齢 From"
-// @Param to_age query int false "年齢 To"
-// @Param sort query int false "並び順"
+// @Param request body request.SearchUserRequest true "ユーザー情報"
 // @Success 200 {object} []response.UserResponse{}
 // @Failure 401 {object} error_handler.ErrorResponse
 // @Failure 403 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
-// @Router /api/v1/users [get]
+// @Router /api/v1/users/all [post]
 func (uc userController) FindAll(c *gin.Context) {
-	req := request.SearchUserRequest{}
+	// req := request.SearchUserRequest{}
+	var req request.SearchUserRequest
+	c.BindJSON(&req)
+	if err := validator.Validate(&req); err != nil {
+		errors := validator.GetErrorMessages(err)
 
-	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
-	if err != nil {
-		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage(errors))
 		c.JSON(apiError.Status, apiError)
 		return
-	}
-	req.Page = page
-
-	prefecture := c.Query("prefecture")
-	if prefecture != "" {
-		p, err := strconv.Atoi(c.Query("prefecture"))
-		req.Prefecture = &p
-		if err != nil {
-			apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
-			c.JSON(apiError.Status, apiError)
-			return
-		}
-	}
-
-	fromAge := c.Query("from_age")
-	if fromAge != "" {
-		f, err := strconv.Atoi(c.Query("from_age"))
-		req.FromAge = &f
-		if err != nil {
-			apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
-			c.JSON(apiError.Status, apiError)
-			return
-		}
-	}
-
-	toAge := c.Query("to_age")
-	if toAge != "" {
-		t, err := strconv.Atoi(c.Query("to_age"))
-		req.ToAge = &t
-		if err != nil {
-			apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
-			c.JSON(apiError.Status, apiError)
-			return
-		}
-	}
-
-	sort := c.Query("sort")
-	if sort != "" {
-		s, err := strconv.Atoi(c.Query("sort"))
-		req.Sort = &s
-		if err != nil {
-			apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
-			c.JSON(apiError.Status, apiError)
-			return
-		}
 	}
 
 	user, err := util.GetLoginUser(c)

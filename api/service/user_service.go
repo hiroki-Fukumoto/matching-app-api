@@ -81,7 +81,7 @@ func (us userService) FindAll(req *request.SearchUserRequest, loginUserID string
 	r.Page = req.Page
 	r.FromAge = req.FromAge
 	r.ToAge = req.ToAge
-	r.Prefecture = req.Prefecture
+	r.Prefectures = req.Prefectures
 	r.Sort = req.Sort
 	users, err := us.userRepository.FindAll(r)
 	if err != nil {

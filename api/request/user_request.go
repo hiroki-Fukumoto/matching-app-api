@@ -10,9 +10,9 @@ type CreateUserRequest struct {
 }
 
 type SearchUserRequest struct {
-	Page       int  `json:"page,omitempty"`
-	Prefecture *int `json:"prefecture,omitempty"`
-	FromAge    *int `json:"from_age,omitempty"`
-	ToAge      *int `json:"to_age,omitempty"`
-	Sort       *int `json:"sort,omitempty"` // TODO: 並び順の種類
+	Page        int    `json:"page,omitempty"`
+	Prefectures *[]int `json:"prefectures,omitempty"`
+	FromAge     *int   `json:"from_age,omitempty"`
+	ToAge       *int   `json:"to_age,omitempty"`
+	Sort        *int   `json:"sort,omitempty"` // TODO: 並び順の種類
 }

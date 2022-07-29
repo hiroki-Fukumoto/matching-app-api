@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/hiroki-Fukumoto/matching-app-api/api/error_handler"
@@ -65,11 +66,11 @@ func (ur *userRepository) Create(req *CreateRequest) (user *model.User, err erro
 }
 
 type FindAllRequest struct {
-	Page       int
-	FromAge    *int
-	ToAge      *int
-	Prefecture *int
-	Sort       *int
+	Page        int
+	FromAge     *int
+	ToAge       *int
+	Prefectures *[]int
+	Sort        *int
 }
 
 func (ur *userRepository) FindAllRequest() *FindAllRequest {
@@ -80,8 +81,12 @@ func (ur *userRepository) FindAll(req *FindAllRequest) (users []*model.User, err
 	db := ur.DB
 
 	q := db
-	if req.Prefecture != nil {
-		q = q.Where("prefecture = ?", req.Prefecture)
+	if req.Prefectures != nil && len(*req.Prefectures) > 0 {
+		var prefs []string
+		for _, p := range *req.Prefectures {
+			prefs = append(prefs, strconv.Itoa(p))
+		}
+		q = q.Where("prefecture IN ?", prefs)
 	}
 	if req.FromAge != nil {
 		b := util.CalcBirthdayMonthFromAge(*req.FromAge)
