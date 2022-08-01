@@ -86,10 +86,12 @@ func SetupRouter() *gin.Engine {
 		gUser.POST("", c.Create)
 
 		gUser.Use(middleware.CheckApiToken())
+		gUser.Use(middleware.DBTransactionMiddleware(db))
 		gUser.GET("info/me", c.Me)
 		gUser.GET("pickup/today", c.PickupToday)
 		gUser.POST("all", c.FindAll)
 		gUser.GET(":id", c.FindByID)
+		gUser.PATCH("", c.Update)
 	}
 
 	gSendLike := appApiV1.Group("likes")
@@ -117,6 +119,17 @@ func SetupRouter() *gin.Engine {
 		gMessage.GET("", c.FindReceiveMessages)
 		gMessage.POST("", c.SendMessage)
 		gMessage.PUT(":id/read", c.ReadMessage)
+	}
+
+	gHobby := appApiV1.Group("hobbies")
+	{
+		db := config.Connect()
+		r := repository.NewHobbyRepository(db)
+		s := service.NewHobbyService(r)
+		c := controller.NewHobbyController(s)
+
+		gHobby.Use(middleware.CheckApiToken())
+		gHobby.GET("", c.FindAll)
 	}
 
 	return route
