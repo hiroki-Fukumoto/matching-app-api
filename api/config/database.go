@@ -56,6 +56,8 @@ func autoMigration() {
 		&model.Device{},
 		&model.Favorite{},
 		&model.Message{},
+		&model.Hobby{},
+		&model.UserHobby{},
 	)
 
 	seeds.Seed(db)
