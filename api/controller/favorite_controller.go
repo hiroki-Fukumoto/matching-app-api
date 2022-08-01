@@ -38,6 +38,7 @@ func NewFavoriteController(us service.FavoriteService) FavoriteController {
 // @Param request body request.SendLikeRequest true "いいねを送る情報"
 // @Success 204 {object} nil
 // @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 403 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes [post]
 func (sc favoriteController) SendLike(c *gin.Context) {
@@ -89,7 +90,7 @@ func (sc favoriteController) SendLike(c *gin.Context) {
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
 // @Param receiverID path string true "取り消しにするユーザーID"
 // @Success 204 {object} nil
-// @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 403 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes/{receiverID}/cancel [delete]
 func (sc favoriteController) CancelLike(c *gin.Context) {
@@ -124,7 +125,7 @@ func (sc favoriteController) CancelLike(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
 // @Success 200 {object} []response.SendLikeResponse
-// @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 403 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes/send [get]
 func (sc favoriteController) FindSendLikes(c *gin.Context) {
@@ -153,7 +154,7 @@ func (sc favoriteController) FindSendLikes(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
 // @Success 200 {object} []response.ReceiveLikeResponse
-// @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 403 {object} error_handler.ErrorResponse
 // @Failure 500 {object} error_handler.ErrorResponse
 // @Router /api/v1/likes/receive [get]
 func (sc favoriteController) FindReceiveLikes(c *gin.Context) {
