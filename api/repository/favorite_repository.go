@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type favoriteLikeRepository struct {
+type favoriteRepository struct {
 	DB *gorm.DB
 }
 
@@ -25,7 +25,7 @@ type FavoriteRepository interface {
 }
 
 func NewFavoriteRepository(db *gorm.DB) FavoriteRepository {
-	return &favoriteLikeRepository{DB: db}
+	return &favoriteRepository{DB: db}
 }
 
 type SendLikeRequest struct {
@@ -33,11 +33,11 @@ type SendLikeRequest struct {
 	ReceiverID string
 }
 
-func (sr *favoriteLikeRepository) SendLikeRequest() *SendLikeRequest {
+func (sr *favoriteRepository) SendLikeRequest() *SendLikeRequest {
 	return &SendLikeRequest{}
 }
 
-func (sr *favoriteLikeRepository) SendLike(req *SendLikeRequest) error {
+func (sr *favoriteRepository) SendLike(req *SendLikeRequest) error {
 	db := sr.DB
 
 	sendLike := &model.Favorite{
@@ -63,11 +63,11 @@ type CancelLikeRequest struct {
 	ReceiverID string
 }
 
-func (sr *favoriteLikeRepository) CancelLikeRequest() *CancelLikeRequest {
+func (sr *favoriteRepository) CancelLikeRequest() *CancelLikeRequest {
 	return &CancelLikeRequest{}
 }
 
-func (sr *favoriteLikeRepository) CancelLike(req *CancelLikeRequest) error {
+func (sr *favoriteRepository) CancelLike(req *CancelLikeRequest) error {
 	db := sr.DB
 
 	sendLike := *&model.Favorite{}
@@ -83,11 +83,11 @@ type FindSendLikesRequest struct {
 	SenderID string
 }
 
-func (sr *favoriteLikeRepository) FindSendLikesRequest() *FindSendLikesRequest {
+func (sr *favoriteRepository) FindSendLikesRequest() *FindSendLikesRequest {
 	return &FindSendLikesRequest{}
 }
 
-func (sr *favoriteLikeRepository) FindSendLikes(req *FindSendLikesRequest) (likes []*model.Favorite, err error) {
+func (sr *favoriteRepository) FindSendLikes(req *FindSendLikesRequest) (likes []*model.Favorite, err error) {
 	db := sr.DB
 	if err := db.Where("sender_id = ?", req.SenderID).
 		Preload("Receiver").
@@ -102,11 +102,11 @@ type FindReceiveLikesRequest struct {
 	ReceiverID string
 }
 
-func (sr *favoriteLikeRepository) FindReceiveLikesRequest() *FindReceiveLikesRequest {
+func (sr *favoriteRepository) FindReceiveLikesRequest() *FindReceiveLikesRequest {
 	return &FindReceiveLikesRequest{}
 }
 
-func (sr *favoriteLikeRepository) FindReceiveLikes(req *FindReceiveLikesRequest) (likes []*model.Favorite, err error) {
+func (sr *favoriteRepository) FindReceiveLikes(req *FindReceiveLikesRequest) (likes []*model.Favorite, err error) {
 	db := sr.DB
 	if err := db.Where("receiver_id = ?", req.ReceiverID).
 		Preload("Sender").
