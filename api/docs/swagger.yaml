@@ -83,6 +83,17 @@ definitions:
     - message
     - receiver_id
     type: object
+  request.UpdateUserRequest:
+    properties:
+      hobbies:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      prefecture:
+        type: integer
+    type: object
   response.AuthenticationResponse:
     properties:
       api_token:
@@ -90,6 +101,18 @@ definitions:
         type: string
     required:
     - api_token
+    type: object
+  response.HobbyResponse:
+    properties:
+      id:
+        description: ID
+        type: string
+      name:
+        description: 名称
+        type: string
+    required:
+    - id
+    - name
     type: object
   response.InitialResponse:
     properties:
@@ -124,6 +147,11 @@ definitions:
       email:
         description: メールアドレス
         type: string
+      hobbies:
+        description: 趣味
+        items:
+          $ref: '#/definitions/response.HobbyResponse'
+        type: array
       id:
         description: ID
         type: string
@@ -150,6 +178,7 @@ definitions:
     - avatar
     - birthday
     - email
+    - hobbies
     - id
     - like
     - name
@@ -216,6 +245,11 @@ definitions:
       birthday:
         description: 生年月日
         type: string
+      hobbies:
+        description: 趣味
+        items:
+          $ref: '#/definitions/response.HobbyResponse'
+        type: array
       id:
         description: ID
         type: string
@@ -247,6 +281,7 @@ definitions:
     required:
     - avatar
     - birthday
+    - hobbies
     - id
     - is_liked
     - is_my_self
@@ -276,6 +311,37 @@ paths:
       summary: health check
       tags:
       - healthCheck
+  /api/v1/hobbies:
+    get:
+      consumes:
+      - application/json
+      description: 趣味マスター
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.HobbyResponse'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: 趣味マスター一覧を取得する
+      tags:
+      - hobby
   /api/v1/initial:
     get:
       consumes:
@@ -316,6 +382,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -344,8 +414,8 @@ paths:
       responses:
         "204":
           description: No Content
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
         "500":
@@ -375,8 +445,8 @@ paths:
             items:
               $ref: '#/definitions/response.ReceiveLikeResponse'
             type: array
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
         "500":
@@ -406,8 +476,8 @@ paths:
             items:
               $ref: '#/definitions/response.SendLikeResponse'
             type: array
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
         "500":
@@ -471,8 +541,8 @@ paths:
             items:
               $ref: '#/definitions/response.ReceiveMessageResponse'
             type: array
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
         "500":
@@ -507,6 +577,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -539,6 +613,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/error_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -568,6 +646,44 @@ paths:
       tags:
       - prefecture
   /api/v1/users:
+    patch:
+      consumes:
+      - application/json
+      description: ユーザー情報を更新する
+      parameters:
+      - description: ログイン時に取得したIDトークン(Bearer)
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 更新内容
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MeResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handler.ErrorResponse'
+      summary: ユーザー情報更新
+      tags:
+      - user
     post:
       consumes:
       - application/json

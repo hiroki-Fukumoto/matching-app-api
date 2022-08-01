@@ -38,6 +38,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/hobbies": {
+            "get": {
+                "description": "趣味マスター",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hobby"
+                ],
+                "summary": "趣味マスター一覧を取得する",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.HobbyResponse"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/initial": {
             "get": {
                 "consumes": [
@@ -101,6 +148,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -142,8 +195,8 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
@@ -189,8 +242,8 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
@@ -237,8 +290,8 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content"
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
@@ -336,8 +389,8 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
@@ -390,6 +443,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
                     },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -434,6 +493,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
@@ -512,6 +577,63 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "ユーザー情報を更新する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ユーザー情報更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ログイン時に取得したIDトークン(Bearer)",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "更新内容",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.MeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error_handler.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/error_handler.ErrorResponse"
                         }
@@ -871,6 +993,23 @@ const docTemplate = `{
                 }
             }
         },
+        "request.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "hobbies": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "prefecture": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.AuthenticationResponse": {
             "type": "object",
             "required": [
@@ -879,6 +1018,23 @@ const docTemplate = `{
             "properties": {
                 "api_token": {
                     "description": "IDトークン",
+                    "type": "string"
+                }
+            }
+        },
+        "response.HobbyResponse": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
                     "type": "string"
                 }
             }
@@ -921,6 +1077,7 @@ const docTemplate = `{
                 "avatar",
                 "birthday",
                 "email",
+                "hobbies",
                 "id",
                 "like",
                 "name",
@@ -939,6 +1096,13 @@ const docTemplate = `{
                 "email": {
                     "description": "メールアドレス",
                     "type": "string"
+                },
+                "hobbies": {
+                    "description": "趣味",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.HobbyResponse"
+                    }
                 },
                 "id": {
                     "description": "ID",
@@ -1049,6 +1213,7 @@ const docTemplate = `{
             "required": [
                 "avatar",
                 "birthday",
+                "hobbies",
                 "id",
                 "is_liked",
                 "is_my_self",
@@ -1065,6 +1230,13 @@ const docTemplate = `{
                 "birthday": {
                     "description": "生年月日",
                     "type": "string"
+                },
+                "hobbies": {
+                    "description": "趣味",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.HobbyResponse"
+                    }
                 },
                 "id": {
                     "description": "ID",

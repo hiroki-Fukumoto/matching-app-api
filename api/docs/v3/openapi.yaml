@@ -17,6 +17,40 @@ paths:
       summary: health check
       tags:
         - healthCheck
+  /api/v1/hobbies:
+    get:
+      description: 趣味マスター
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/response.HobbyResponse"
+                type: array
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: 趣味マスター一覧を取得する
+      tags:
+        - hobby
   /api/v1/initial:
     get:
       responses:
@@ -55,6 +89,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
         "500":
           description: Internal Server Error
           content:
@@ -83,8 +123,8 @@ paths:
       responses:
         "204":
           description: No Content
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -117,8 +157,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/response.ReceiveLikeResponse"
                 type: array
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -151,8 +191,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/response.SendLikeResponse"
                 type: array
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -223,8 +263,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/response.ReceiveMessageResponse"
                 type: array
-        "400":
-          description: Bad Request
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -263,6 +303,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
         "500":
           description: Internal Server Error
           content:
@@ -293,6 +339,12 @@ paths:
           description: No Content
         "400":
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -328,6 +380,50 @@ paths:
       tags:
         - prefecture
   /api/v1/users:
+    patch:
+      description: ユーザー情報を更新する
+      parameters:
+        - description: ログイン時に取得したIDトークン(Bearer)
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.UpdateUserRequest"
+        description: 更新内容
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.MeResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_handler.ErrorResponse"
+      summary: ユーザー情報更新
+      tags:
+        - user
     post:
       description: 新しいユーザーを作成する
       requestBody:
@@ -616,6 +712,17 @@ components:
         - message
         - receiver_id
       type: object
+    request.UpdateUserRequest:
+      properties:
+        hobbies:
+          items:
+            type: string
+          type: array
+        name:
+          type: string
+        prefecture:
+          type: integer
+      type: object
     response.AuthenticationResponse:
       properties:
         api_token:
@@ -623,6 +730,18 @@ components:
           type: string
       required:
         - api_token
+      type: object
+    response.HobbyResponse:
+      properties:
+        id:
+          description: ID
+          type: string
+        name:
+          description: 名称
+          type: string
+      required:
+        - id
+        - name
       type: object
     response.InitialResponse:
       properties:
@@ -657,6 +776,11 @@ components:
         email:
           description: メールアドレス
           type: string
+        hobbies:
+          description: 趣味
+          items:
+            $ref: "#/components/schemas/response.HobbyResponse"
+          type: array
         id:
           description: ID
           type: string
@@ -682,6 +806,7 @@ components:
         - avatar
         - birthday
         - email
+        - hobbies
         - id
         - like
         - name
@@ -745,6 +870,11 @@ components:
         birthday:
           description: 生年月日
           type: string
+        hobbies:
+          description: 趣味
+          items:
+            $ref: "#/components/schemas/response.HobbyResponse"
+          type: array
         id:
           description: ID
           type: string
@@ -775,6 +905,7 @@ components:
       required:
         - avatar
         - birthday
+        - hobbies
         - id
         - is_liked
         - is_my_self
