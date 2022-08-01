@@ -15,16 +15,21 @@ func (p *PrefectureResponse) toPrefectureResponse(u *model.User) PrefectureRespo
 	return *p
 }
 
-type MeResponse struct {
+type BaseResponse struct {
 	ID         string             `json:"id" validate:"required"`                            // ID
 	Name       string             `json:"name" validate:"required"`                          // 名前
-	Email      string             `json:"email" validate:"required"`                         // メールアドレス
 	Sex        enum.Sex           `json:"sex" validate:"required" enums:"male,female,other"` // 性別
 	Birthday   string             `json:"birthday" validate:"required"`                      // 生年月日
 	Message    *string            `json:"message"`                                           // メッセージ
 	Avatar     string             `json:"avatar" validate:"required"`                        // アバター
 	Like       int                `json:"like" validate:"required"`                          // いいね数
 	Prefecture PrefectureResponse `json:"prefecture" validate:"required"`                    // 都道府県
+	Hobbies    []HobbyResponse    `json:"hobbies" validate:"required"`                       // 趣味
+}
+
+type MeResponse struct {
+	BaseResponse
+	Email string `json:"email" validate:"required"` // メールアドレス
 }
 
 func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
@@ -37,6 +42,14 @@ func (m *MeResponse) ToMeResponse(u *model.User) MeResponse {
 	m.Avatar = u.Avatar
 	m.Like = int(u.Like)
 	m.Prefecture = m.Prefecture.toPrefectureResponse(u)
+
+	hr := []HobbyResponse{}
+	for _, h := range u.Hobbies {
+		r := &HobbyResponse{}
+		r.ToHobbyResponse(&h)
+		hr = append(hr, *r)
+	}
+	m.Hobbies = hr
 
 	return *m
 }
@@ -58,16 +71,9 @@ func (l *LoginUserResponse) ToLoginUserResponse(u *model.User, apiToken string) 
 }
 
 type UserResponse struct {
-	ID         string             `json:"id" validate:"required"`                            // ID
-	Name       string             `json:"name" validate:"required"`                          // 名前
-	Sex        enum.Sex           `json:"sex" validate:"required" enums:"male,female,other"` // 性別
-	Birthday   string             `json:"birthday" validate:"required"`                      // 生年月日
-	Message    *string            `json:"message"`                                           // メッセージ
-	Avatar     string             `json:"avatar" validate:"required"`                        // アバター
-	Like       int                `json:"like" validate:"required"`                          // いいね数
-	Prefecture PrefectureResponse `json:"prefecture" validate:"required"`                    // 都道府県
-	IsMySelf   bool               `json:"is_my_self" validate:"required"`                    // 自分自身か
-	IsLiked    bool               `json:"is_liked" validate:"required"`                      // いいね済みか
+	BaseResponse
+	IsMySelf bool `json:"is_my_self" validate:"required"` // 自分自身か
+	IsLiked  bool `json:"is_liked" validate:"required"`   // いいね済みか
 }
 
 func (ur *UserResponse) ToUserResponse(u *model.User) UserResponse {
@@ -79,6 +85,14 @@ func (ur *UserResponse) ToUserResponse(u *model.User) UserResponse {
 	ur.Avatar = u.Avatar
 	ur.Like = int(u.Like)
 	ur.Prefecture = ur.Prefecture.toPrefectureResponse(u)
+
+	hr := []HobbyResponse{}
+	for _, h := range u.Hobbies {
+		r := &HobbyResponse{}
+		r.ToHobbyResponse(&h)
+		hr = append(hr, *r)
+	}
+	ur.Hobbies = hr
 
 	return *ur
 }

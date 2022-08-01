@@ -15,6 +15,7 @@ import (
 
 type UserController interface {
 	Create(c *gin.Context)
+	Update(c *gin.Context)
 	Me(c *gin.Context)
 	PickupToday(c *gin.Context)
 	FindAll(c *gin.Context)
@@ -60,6 +61,47 @@ func (uc userController) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, res)
+}
+
+// @Summary ユーザー情報更新
+// @Description ユーザー情報を更新する
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "ログイン時に取得したIDトークン(Bearer)"
+// @Param request body request.UpdateUserRequest true "更新内容"
+// @Success 200 {object} response.MeResponse{}
+// @Failure 400 {object} error_handler.ErrorResponse
+// @Failure 403 {object} error_handler.ErrorResponse
+// @Failure 500 {object} error_handler.ErrorResponse
+// @Router /api/v1/users [patch]
+func (uc userController) Update(c *gin.Context) {
+	user, err := util.GetLoginUser(c)
+
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	var req request.UpdateUserRequest
+	c.BindJSON(&req)
+	if err := validator.Validate(&req); err != nil {
+		errors := validator.GetErrorMessages(err)
+
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrBadRequest, error_handler.ErrorMessage(errors))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	res, err := uc.userService.Update(c, user.ID, &req)
+	if err != nil {
+		apiError := error_handler.ApiErrorHandle(err.Error(), error_handler.ErrInternalServerError, error_handler.ErrorMessage([]string{enum.InternalServerError.String()}))
+		c.JSON(apiError.Status, apiError)
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
 }
 
 // @Summary ログインユーザー情報取得

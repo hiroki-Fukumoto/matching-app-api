@@ -9,6 +9,12 @@ type CreateUserRequest struct {
 	Password   string `json:"password" validate:"required,gte=8,lt=64" ja:"パスワード"`
 }
 
+type UpdateUserRequest struct {
+	Name       string   `json:"name,omitempty" ja:"名前"`
+	Prefecture int      `json:"prefecture,omitempty" ja:"都道府県"`
+	Hobbies    []string `json:"hobbies,omitempty" ja:"趣味"`
+}
+
 type SearchUserRequest struct {
 	Page        int    `json:"page,omitempty"`
 	Prefectures *[]int `json:"prefectures,omitempty"`

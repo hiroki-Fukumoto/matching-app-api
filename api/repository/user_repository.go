@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"log"
 	"strconv"
 	"time"
 
@@ -16,8 +17,11 @@ type userRepository struct {
 }
 
 type UserRepository interface {
+	WithTrx(*gorm.DB) *userRepository
 	CreateRequest() *CreateRequest
 	Create(req *CreateRequest) (user *model.User, err error)
+	UpdateRequest() *UpdateRequest
+	Update(id string, req *UpdateRequest) (user *model.User, err error)
 	FindAllRequest() *FindAllRequest
 	FindAll(req *FindAllRequest) (users []*model.User, err error)
 	FindByEmailRequest() *FindByEmailRequest
@@ -30,6 +34,15 @@ type UserRepository interface {
 
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{DB: db}
+}
+
+func (u *userRepository) WithTrx(trxHandle *gorm.DB) *userRepository {
+	if trxHandle == nil {
+		log.Print("Transaction Database not found")
+		return u
+	}
+	u.DB = trxHandle
+	return u
 }
 
 type CreateRequest struct {
@@ -59,6 +72,51 @@ func (ur *userRepository) Create(req *CreateRequest) (user *model.User, err erro
 	}
 
 	if err := db.Create(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+type UpdateRequest struct {
+	Name       string
+	Prefecture uint16
+	Hobbies    []string
+}
+
+func (ur *userRepository) UpdateRequest() *UpdateRequest {
+	return &UpdateRequest{}
+}
+
+func (ur *userRepository) Update(id string, req *UpdateRequest) (user *model.User, err error) {
+	db := ur.DB
+
+	err = db.Where("id = ?", id).First(&user).
+		Updates(model.User{Name: req.Name, Prefecture: req.Prefecture}).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, error_handler.ErrRecordNotFound
+	}
+
+	if len(req.Hobbies) > 0 {
+		if err := db.Where("user_id = ?", id).Delete(&model.UserHobby{}).Error; err != nil {
+			return nil, err
+		}
+	}
+
+	for _, h := range req.Hobbies {
+		m := &model.UserHobby{
+			UserID:  id,
+			HobbyID: h,
+		}
+
+		if err := db.Create(&m).Error; err != nil {
+			return nil, err
+		}
+	}
+
+	err = db.Preload("Hobbies").First(&user).Error
+	if err != nil {
 		return nil, err
 	}
 
@@ -100,7 +158,7 @@ func (ur *userRepository) FindAll(req *FindAllRequest) (users []*model.User, err
 		q = q.Order("created_at desc")
 	}
 	l := 20
-	if err := q.Limit(l).Offset((req.Page - 1) * l).Find(&users).Error; err != nil {
+	if err := q.Preload("Hobbies").Limit(l).Offset((req.Page - 1) * l).Find(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -117,7 +175,7 @@ func (ur *userRepository) FindByEmailRequest() *FindByEmailRequest {
 func (ur *userRepository) FindByEmail(req *FindByEmailRequest) (user *model.User, err error) {
 	db := ur.DB
 
-	err = db.Where("email = ?", req.Email).First(&user).Error
+	err = db.Preload("Hobbies").Where("email = ?", req.Email).First(&user).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, error_handler.ErrRecordNotFound
@@ -141,7 +199,7 @@ func (ur *userRepository) FindByIDRequest() *FindByIDRequest {
 func (ur *userRepository) FindByID(req *FindByIDRequest) (user *model.User, err error) {
 	db := ur.DB
 
-	err = db.Where("id = ?", req.ID).First(&user).Error
+	err = db.Preload("Hobbies").Where("id = ?", req.ID).First(&user).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, error_handler.ErrRecordNotFound
@@ -165,7 +223,7 @@ func (ur *userRepository) FindPickUpTodayRequest() *FindPickUpTodayRequest {
 func (ur *userRepository) FindPickUpToday(req *FindPickUpTodayRequest) (users []*model.User, err error) {
 	db := ur.DB
 
-	if err := db.Where("sex = ?", req.Sex).Limit(20).Find(&users).Error; err != nil {
+	if err := db.Preload("Hobbies").Where("sex = ?", req.Sex).Limit(20).Find(&users).Error; err != nil {
 		return nil, err
 	}
 

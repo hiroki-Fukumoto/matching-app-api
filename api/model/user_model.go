@@ -18,4 +18,6 @@ type User struct {
 	Avatar     string    `gorm:"size:255;comment:アバター画像URL"`
 	Password   []byte    `gorm:"not null'"`
 	DeletedAt  gorm.DeletedAt
+
+	Hobbies []Hobby `gorm:"many2many:user_hobbies;"`
 }

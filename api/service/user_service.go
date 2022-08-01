@@ -1,16 +1,19 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/repository"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/request"
 	"github.com/hiroki-Fukumoto/matching-app-api/api/response"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"github.com/hiroki-Fukumoto/matching-app-api/api/util"
 )
 
 type UserService interface {
 	Create(req *request.CreateUserRequest) (res *response.LoginUserResponse, err error)
+	Update(c *gin.Context, id string, req *request.UpdateUserRequest) (res *response.MeResponse, err error)
 	PickupToday(targetSex string) (res []*response.UserResponse, err error)
 	FindAll(req *request.SearchUserRequest, loginUserID string) (res []*response.UserResponse, err error)
 	FindByID(id string, loginUserID string) (res *response.UserResponse, err error)
@@ -53,6 +56,24 @@ func (us userService) Create(req *request.CreateUserRequest) (res *response.Logi
 
 	res = &response.LoginUserResponse{}
 	res.ToLoginUserResponse(user, apiToken)
+
+	return res, nil
+}
+
+func (us userService) Update(c *gin.Context, id string, req *request.UpdateUserRequest) (res *response.MeResponse, err error) {
+	r := us.userRepository.UpdateRequest()
+	r.Name = req.Name
+	r.Prefecture = uint16(req.Prefecture)
+	r.Hobbies = req.Hobbies
+
+	txHandle := c.MustGet("db_trx").(*gorm.DB)
+	user, err := us.userRepository.WithTrx(txHandle).Update(id, r)
+	if err != nil {
+		return nil, err
+	}
+
+	res = &response.MeResponse{}
+	res.ToMeResponse(user)
 
 	return res, nil
 }
